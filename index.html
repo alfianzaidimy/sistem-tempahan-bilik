@@ -13,55 +13,60 @@
 </head>
 <body class="bg-[#f8f9fe] font-sans antialiased text-slate-700">
 
-    <div class="flex h-screen overflow-hidden">
-        <!-- Sidebar Ungu Gelap (Gaya Dashboard Pilihan) -->
-        <div class="hidden md:flex md:flex-shrink-0">
-            <div class="flex flex-col w-64 bg-[#3d346b] text-white">
-                <div class="flex items-center space-x-3 px-6 h-20 bg-[#352d5e]">
-    <!-- Masukkan Logo MINDEF di sini -->
-    <div class="flex items-center justify-center">
-        <img src="logo.png" alt="Logo MINDEF" class="h-9 w-auto object-contain">
-    </div>
-    <div>
-        <span class="block font-bold text-sm tracking-wide text-white">Sistem Tempahan</span>
-        <span class="block text-xs text-purple-300">MinDef Facility</span>
-    </div>
-</div>
-                <div class="flex flex-col flex-grow px-4 py-6 space-y-1">
-                    <a href="#" class="flex items-center px-4 py-3 text-sm font-medium rounded-xl bg-white text-[#3d346b] shadow-md"><i class="fa-solid fa-chart-pie w-6"></i> Dashboard</a>
-                    <a href="#" class="flex items-center px-4 py-3 text-sm font-medium rounded-xl text-purple-200 hover:bg-white/10 transition"><i class="fa-solid fa-calendar-days w-6"></i> Kalendar Tempahan</a>
-                    <a href="#" class="flex items-center px-4 py-3 text-sm font-medium rounded-xl text-purple-200 hover:bg-white/10 transition"><i class="fa-solid fa-door-open w-6"></i> Senarai Fasiliti</a>
-                </div>
-                <div class="p-4 m-4 rounded-xl bg-[#352d5e] text-xs text-purple-300 flex items-center space-x-3">
-                    <div class="w-8 h-8 rounded-full bg-purple-400/20 flex items-center justify-center font-bold text-white">B</div>
-<div>
-                        <span class="block font-semibold text-white">Bie (Admin)</span>
-                        <span class="text-[10px] text-emerald-400">● Online</span>
+    <div class="flex h-screen overflow-hidden relative">
+        <!-- Sidebar Ungu Gelap (Responsive untuk Mobile & Desktop) -->
+        <aside id="sidebar" class="absolute inset-y-0 left-0 z-50 flex flex-col w-64 bg-[#3d346b] text-white transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out md:static md:flex-shrink-0 shadow-xl md:shadow-none">
+            <div class="flex items-center justify-between px-6 h-20 bg-[#352d5e]">
+                <div class="flex items-center space-x-3">
+                    <img src="logo.png" alt="Logo MINDEF" class="h-9 w-auto object-contain">
+                    <div>
+                        <span class="block font-bold text-sm tracking-wide text-white">Sistem Tempahan</span>
+                        <span class="block text-xs text-purple-300">MinDef Facility</span>
                     </div>
+                </div>
+                <!-- Butang pangkah untuk tutup menu di telefon bimbit -->
+                <button onclick="toggleSidebar()" class="md:hidden text-purple-200 hover:text-white p-2">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="flex flex-col flex-grow px-4 py-6 space-y-1">
+                <a href="#" class="flex items-center px-4 py-3 text-sm font-medium rounded-xl bg-white text-[#3d346b] shadow-md"><i class="fa-solid fa-chart-pie w-6"></i> Dashboard</a>
+                <a href="#" class="flex items-center px-4 py-3 text-sm font-medium rounded-xl text-purple-200 hover:bg-white/10 transition"><i class="fa-solid fa-calendar-days w-6"></i> Kalendar Tempahan</a>
+                <a href="#" class="flex items-center px-4 py-3 text-sm font-medium rounded-xl text-purple-200 hover:bg-white/10 transition"><i class="fa-solid fa-door-open w-6"></i> Senarai Fasiliti</a>
+            </div>
+            <div class="p-4 m-4 rounded-xl bg-[#352d5e] text-xs text-purple-300 flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-full bg-purple-400/20 flex items-center justify-center font-bold text-white">B</div>
+                <div>
+                    <span class="block font-semibold text-white">Bie (Admin)</span>
+                    <span class="text-[10px] text-emerald-400">● Online</span>
                 </div>
             </div>
-        </div>
+        </aside>
 
         <!-- Main Content Area -->
-        <div class="flex flex-col flex-1 h-full overflow-hidden">
+        <div class="flex flex-col flex-1 h-full overflow-hidden w-full">
             <!-- Top Navbar -->
-            <header class="flex items-center justify-between h-20 px-8 bg-white border-b border-slate-100 shadow-xs">
-                <div class="flex items-center space-x-4">
-                    <h1 class="text-xl font-bold text-slate-800">Welcome to Sistem Tempahan</h1>
+            <header class="flex items-center justify-between h-20 px-4 md:px-8 bg-white border-b border-slate-100 shadow-xs">
+                <div class="flex items-center space-x-3">
+                    <!-- Butang Hamburger Menu untuk Mobile -->
+                    <button onclick="toggleSidebar()" class="md:hidden p-2 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 focus:outline-none">
+                        <i class="fa-solid fa-bars text-lg"></i>
+                    </button>
+                    <h1 class="text-lg md:text-xl font-bold text-slate-800 truncate">Welcome to Sistem Tempahan</h1>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <div class="relative">
-                        <input type="text" placeholder="Cari rekod..." class="pl-10 pr-4 py-2 bg-slate-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 w-64">
+                <div class="flex items-center space-x-3 md:space-x-4">
+                    <div class="relative hidden sm:block">
+                        <input type="text" placeholder="Cari rekod..." class="pl-10 pr-4 py-2 bg-slate-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 w-48 md:w-64">
                         <i class="fa-solid fa-search absolute left-4 top-3 text-slate-400 text-sm"></i>
                     </div>
-                    <div class="w-10 h-10 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-bold">B</div>
+                    <div class="w-10 h-10 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-bold shrink-0">B</div>
                 </div>
             </header>
 
             <!-- Dashboard Body -->
-            <main class="flex-1 overflow-x-hidden overflow-y-auto p-8">
+            <main class="flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-8">
                 <!-- 4 Kad Statistik di Atas -->
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8">
                     <div class="bg-white p-6 rounded-2xl shadow-xs border-t-4 border-rose-400 flex items-center justify-between">
                         <div>
                             <p class="text-xs font-semibold uppercase text-slate-400 tracking-wider">Jumlah Tempahan</p>
@@ -92,7 +97,7 @@
                     </div>
                 </div>
 
-                <!-- Grid Utama: Kiri (Borang & Kalendar) | Kanan (Jadual Real-Time) -->
+                <!-- Grid Utama: Kiri (Borang) | Kanan (Jadual Real-Time) -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <!-- Borang Tempahan Baru -->
                     <div class="bg-white p-6 rounded-2xl shadow-xs lg:col-span-1">
@@ -177,7 +182,12 @@
 
     <!-- Skrip Supabase & Logik Dashboard -->
     <script>
-        // MASUKKAN SUPABASE URL & ANON KEY BIE DI SINI NANTI
+        // Fungsi untuk buka/tutup menu di telefon bimbit
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        }
+
         const SUPABASE_URL = 'https://sawdjsujxtmyiicosxcw.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_fCnZl3czaDMOZkGmCcWYsQ_LsPvIGBA';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -222,7 +232,7 @@
                         <td class="py-3.5 px-4 font-semibold text-purple-700">${b.fasiliti}</td>
                         <td class="py-3.5 px-4">
                             <div class="font-medium text-slate-800">${b.tajuk}</div>
-                            <div class="text-xs text-slate-400">${b.pemohon} (${b.unit})</div>
+                            <div class="text-xs text-slate-400">${b.nama_pemohon} (${b.unit})</div>
                         </td>
                         <td class="py-3.5 px-4">
                             <span class="px-3 py-1 rounded-full text-xs font-semibold ${badgeColor}">${b.status || 'Diluluskan'}</span>
