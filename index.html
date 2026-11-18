@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Tempahan Fasiliti & Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-[#f8f9fe] font-sans antialiased text-slate-700">
+
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar Ungu Gelap (Gaya Dashboard Pilihan) -->
+        <div class="hidden md:flex md:flex-shrink-0">
+            <div class="flex flex-col w-64 bg-[#3d346b] text-white">
+                <div class="flex items-center space-x-3 px-6 h-20 bg-[#352d5e]">
+                    <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-xl text-purple-200">
+                        <i class="fa-solid fa-building-user"></i>
+                    </div>
+                    <div>
+                        <span class="block font-bold text-sm tracking-wide text-white">Sistem Tempahan</span>
+                        <span class="block text-xs text-purple-300">MinDef Facility</span>
+                    </div>
+                </div>
+                <div class="flex flex-col flex-grow px-4 py-6 space-y-1">
+                    <a href="#" class="flex items-center px-4 py-3 text-sm font-medium rounded-xl bg-white text-[#3d346b] shadow-md"><i class="fa-solid fa-chart-pie w-6"></i> Dashboard</a>
+                    <a href="#" class="flex items-center px-4 py-3 text-sm font-medium rounded-xl text-purple-200 hover:bg-white/10 transition"><i class="fa-solid fa-calendar-days w-6"></i> Kalendar Tempahan</a>
+                    <a href="#" class="flex items-center px-4 py-3 text-sm font-medium rounded-xl text-purple-200 hover:bg-white/10 transition"><i class="fa-solid fa-door-open w-6"></i> Senarai Fasiliti</a>
+                </div>
+                <div class="p-4 m-4 rounded-xl bg-[#352d5e] text-xs text-purple-300 flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded-full bg-purple-400/20 flex items-center justify-center font-bold text-white">B</div>
+<div>
+                        <span class="block font-semibold text-white">Bie (Admin)</span>
+                        <span class="text-[10px] text-emerald-400">● Online</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="flex flex-col flex-1 h-full overflow-hidden">
+            <!-- Top Navbar -->
+            <header class="flex items-center justify-between h-20 px-8 bg-white border-b border-slate-100 shadow-xs">
+                <div class="flex items-center space-x-4">
+                    <h1 class="text-xl font-bold text-slate-800">Welcome to Sistem Tempahan</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <input type="text" placeholder="Cari rekod..." class="pl-10 pr-4 py-2 bg-slate-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 w-64">
+                        <i class="fa-solid fa-search absolute left-4 top-3 text-slate-400 text-sm"></i>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-bold">B</div>
+                </div>
+            </header>
+
+            <!-- Dashboard Body -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto p-8">
+                <!-- 4 Kad Statistik di Atas -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-2xl shadow-xs border-t-4 border-rose-400 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold uppercase text-slate-400 tracking-wider">Jumlah Tempahan</p>
+                            <h3 id="statTotal" class="text-2xl font-bold text-slate-800 mt-1">--</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-rose-50 text-rose-500 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-calendar-check"></i></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-xs border-t-4 border-indigo-500 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold uppercase text-slate-400 tracking-wider">Menunggu Kelulusan</p>
+                            <h3 id="statPending" class="text-2xl font-bold text-indigo-600 mt-1">--</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-clock"></i></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-xs border-t-4 border-amber-400 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold uppercase text-slate-400 tracking-wider">Fasiliti Aktif</p>
+                            <h3 class="text-2xl font-bold text-amber-600 mt-1">3 Bilik</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-amber-50 text-amber-500 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-door-closed"></i></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-xs border-t-4 border-emerald-500 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold uppercase text-slate-400 tracking-wider">Status Sistem</p>
+                            <h3 class="text-2xl font-bold text-emerald-600 mt-1">Live Sync</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-shield-halved"></i></div>
+                    </div>
+                </div>
+
+                <!-- Grid Utama: Kiri (Borang & Kalendar) | Kanan (Jadual Real-Time) -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Borang Tempahan Baru -->
+                    <div class="bg-white p-6 rounded-2xl shadow-xs lg:col-span-1">
+                        <h3 class="text-base font-bold text-slate-800 mb-4 flex items-center">
+                            <i class="fa-solid fa-plus-circle text-purple-600 mr-2"></i> Mohon Tempahan Bilik
+                        </h3>
+                        <form id="bookingForm" class="space-y-4 text-sm">
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">Nama Penuh</label>
+                                <input type="text" id="nama" required class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Nama pemohon">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block font-medium text-slate-600 mb-1">Bahagian / Unit</label>
+                                    <input type="text" id="unit" required class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Cth: Akaun">
+                                </div>
+                                <div>
+                                    <label class="block font-medium text-slate-600 mb-1">Emel Rasmi</label>
+                                    <input type="email" id="emel" required class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="nama@mindef.gov.my">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">Pilih Fasiliti</label>
+                                <select id="fasiliti" required class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                    <option value="Bilik Mesyuarat Utama">Bilik Mesyuarat Utama (30 Orang)</option>
+                                    <option value="Bilik Seminar">Bilik Seminar (50 Orang)</option>
+                                    <option value="Bilik Perbincangan Kecil">Bilik Perbincangan Kecil (10 Orang)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">Tarikh Guna</label>
+                                <input type="date" id="tarikh" required class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block font-medium text-slate-600 mb-1">Masa Mula</label>
+                                    <input type="time" id="mula" required class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                </div>
+                                <div>
+                                    <label class="block font-medium text-slate-600 mb-1">Masa Tamat</label>
+                                    <input type="time" id="tamat" required class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">Tajuk Mesyuarat / Program</label>
+                                <textarea id="tajuk" rows="2" required class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Tujuan penggunaan"></textarea>
+                            </div>
+                            <button type="submit" id="btnSubmit" class="w-full bg-[#3d346b] hover:bg-[#352d5e] text-white font-semibold py-2.5 rounded-xl transition shadow-md">Hantar Permohonan</button>
+                        </form>
+                    </div>
+
+                    <!-- Senarai Jadual Tempahan Real-Time -->
+                    <div class="bg-white p-6 rounded-2xl shadow-xs lg:col-span-2">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-base font-bold text-slate-800 flex items-center">
+                                <i class="fa-solid fa-list-check text-purple-600 mr-2"></i> Jadual Tempahan Semasa
+                            </h3>
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-600">
+                                <span class="w-2 h-2 mr-1.5 bg-emerald-500 rounded-full animate-pulse"></span> Live Database
+                            </span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-sm">
+                                <thead>
+                                    <tr class="border-b border-slate-100 text-slate-400 font-semibold text-xs uppercase tracking-wider">
+                                        <th class="py-3 px-4">Tarikh & Masa</th>
+                                        <th class="py-3 px-4">Fasiliti</th>
+                                        <th class="py-3 px-4">Pemohon & Tajuk</th>
+                                        <th class="py-3 px-4">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bookingTable" class="divide-y divide-slate-50 text-slate-600">
+                                    <tr><td colspan="4" class="text-center py-6 text-slate-400">Memuatkan data dari Supabase...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Skrip Supabase & Logik Dashboard -->
+    <script>
+        // MASUKKAN SUPABASE URL & ANON KEY BIE DI SINI NANTI
+        const SUPABASE_URL = 'https://URL_SUPABASE_BIE.supabase.co';
+        const SUPABASE_ANON_KEY = 'KUNCI_ANON_BIE';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadBookings();
+        });
+
+        async function loadBookings() {
+            const { data, error } = await supabaseClient
+                .from('tempahan')
+                .select('*')
+                .order('id', { ascending: false });
+
+            if (error) {
+                console.error('Ralat ambil data:', error);
+                return;
+            }
+
+            const tbody = document.getElementById('bookingTable');
+            document.getElementById('statTotal').innerText = data.length;
+            const pendingCount = data.filter(b => b.status === 'Menunggu Kelulusan').length;
+            document.getElementById('statPending').innerText = pendingCount;
+
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center py-6 text-slate-400">Tiada rekod tempahan dijumpai.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = '';
+            data.forEach(b => {
+                let badgeColor = 'bg-emerald-50 text-emerald-600';
+                if (b.status === 'Menunggu Kelulusan') badgeColor = 'bg-amber-50 text-amber-600';
+                if (b.status === 'Ditolak') badgeColor = 'bg-rose-50 text-rose-600';
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50/50 transition">
+                        <td class="py-3.5 px-4">
+                            <div class="font-bold text-slate-800">${b.tarikh}</div>
+                            <div class="text-xs text-slate-400">${b.masa_mula} - ${b.masa_tamat}</div>
+                        </td>
+                        <td class="py-3.5 px-4 font-semibold text-purple-700">${b.fasiliti}</td>
+                        <td class="py-3.5 px-4">
+                            <div class="font-medium text-slate-800">${b.tajuk}</div>
+                            <div class="text-xs text-slate-400">${b.pemohon} (${b.unit})</div>
+                        </td>
+                        <td class="py-3.5 px-4">
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold ${badgeColor}">${b.status || 'Diluluskan'}</span>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnSubmit');
+            btn.innerText = 'Menghantar...';
+            btn.disabled = true;
+
+            const formData = {
+                nama_pemohon: document.getElementById('nama').value,
+                unit: document.getElementById('unit').value,
+                emel: document.getElementById('emel').value,
+                fasiliti: document.getElementById('fasiliti').value,
+                tarikh: document.getElementById('tarikh').value,
+                masa_mula: document.getElementById('mula').value,
+                masa_tamat: document.getElementById('tamat').value,
+                tajuk: document.getElementById('tajuk').value,
+                status: 'Menunggu Kelulusan'
+            };
+
+            const { error } = await supabaseClient.from('tempahan').insert([formData]);
+
+            btn.innerText = 'Hantar Permohonan';
+            btn.disabled = false;
+
+            if (error) {
+                alert('Gagal hantar: ' + error.message);
+            } else {
+                alert('Permohonan berjaya dihantar!');
+                document.getElementById('bookingForm').reset();
+                loadBookings();
+            }
+        });
+    </script>
+</body>
+</html>
