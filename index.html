@@ -28,9 +28,9 @@
     <div class="w-full max-w-[1440px] min-h-screen sm:min-h-[88vh] bg-white sm:rounded-[32px] shadow-2xl shadow-indigo-950/15 flex overflow-hidden relative">
 
         <!-- 1. LEFT SIDEBAR -->
-        <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-100 flex flex-col justify-between p-6 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out lg:static lg:flex-shrink-0">
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-slate-100 flex flex-col justify-between p-6 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out lg:static lg:flex-shrink-0">
             <div>
-                <!-- Brand / Logo MinDef (Sudah Dibersihkan) -->
+                <!-- Brand / Logo MinDef -->
                 <div class="flex items-center justify-between mb-9">
                     <div class="flex items-center">
                         <img src="logo.png" alt="Logo MINDEF" class="h-9 w-auto object-contain">
@@ -58,14 +58,10 @@
                         <i class="fa-solid fa-list-check w-4 text-center"></i>
                         <span>Rekod Tempahan</span>
                     </a>
-                    <a href="#topSection" onclick="closeMobileMenu()" class="flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-slate-400 hover:text-[#6259ca] hover:bg-slate-50 transition">
+                    <button type="button" onclick="openAdminModal()" class="w-full flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-slate-400 hover:text-[#6259ca] hover:bg-slate-50 transition text-left">
                         <i class="fa-solid fa-user-shield w-4 text-center"></i>
-                        <span>Akaun Admin</span>
-                    </a>
-                    <a href="#tableSection" onclick="closeMobileMenu()" class="flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-slate-400 hover:text-[#6259ca] hover:bg-slate-50 transition">
-                        <i class="fa-solid fa-sliders w-4 text-center"></i>
-                        <span>Tetapan</span>
-                    </a>
+                        <span id="sidebarAdminLabel">Log Masuk Admin</span>
+                    </button>
                 </nav>
             </div>
 
@@ -98,21 +94,34 @@
                     </div>
                 </div>
 
-                <!-- Kotak Carian & Ikon Notifikasi -->
-                <div class="flex items-center space-x-3">
+                <!-- Kotak Carian, Butang Admin & Notifikasi -->
+                <div class="flex items-center space-x-2.5 sm:space-x-3">
                     <div class="relative hidden sm:block">
-                        <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Cari rekod..." class="pl-4 pr-10 py-2.5 bg-white border border-slate-100 rounded-2xl text-xs font-medium text-slate-600 focus:outline-none focus:ring-2 focus:ring-[#6259ca]/30 w-44 md:w-56 shadow-xs">
+                        <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Cari rekod..." class="pl-4 pr-10 py-2.5 bg-white border border-slate-100 rounded-2xl text-xs font-medium text-slate-600 focus:outline-none focus:ring-2 focus:ring-[#6259ca]/30 w-40 md:w-52 shadow-xs">
                         <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-3 text-slate-400 text-xs"></i>
                     </div>
-                    <button onclick="loadBookings()" title="Muat Semula Data" class="w-10 h-10 rounded-2xl bg-white border border-slate-100 text-[#6259ca] hover:bg-[#6259ca] hover:text-white flex items-center justify-center shadow-xs transition">
+
+                    <button type="button" id="btnAuthAction" onclick="handleAuthButton()" class="px-3.5 py-2.5 rounded-2xl bg-[#f4f3ff] hover:bg-[#6259ca] text-[#6259ca] hover:text-white text-xs font-bold flex items-center space-x-2 shadow-xs transition">
+                        <i id="authIcon" class="fa-solid fa-lock"></i>
+                        <span id="authText">Admin Login</span>
+                    </button>
+
+                    <button type="button" onclick="loadBookings()" title="Muat Semula Data" class="w-10 h-10 rounded-2xl bg-white border border-slate-100 text-[#6259ca] hover:bg-[#6259ca] hover:text-white flex items-center justify-center shadow-xs transition">
                         <i class="fa-solid fa-rotate text-xs"></i>
                     </button>
-                    <div class="w-10 h-10 rounded-2xl bg-[#f4f3ff] text-[#6259ca] flex items-center justify-center shadow-xs relative">
-                        <i class="fa-solid fa-bell text-xs"></i>
-                        <span class="w-2 h-2 rounded-full bg-rose-500 absolute top-2.5 right-2.5"></span>
-                    </div>
                 </div>
             </header>
+
+            <!-- Banner Mod Admin Aktif (Hanya kelihatan bila Admin dah login) -->
+            <div id="adminModeBanner" class="hidden mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center space-x-3 text-emerald-800 text-xs sm:text-sm font-bold">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>Mod Admin Aktif (<span id="adminEmailDisplay"></span>) — Anda boleh meluluskan, menolak atau memadam tempahan.</span>
+                </div>
+                <button type="button" onclick="logoutAdmin()" class="px-3 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition">
+                    Log Keluar
+                </button>
+            </div>
 
             <!-- Seksyen Kad Pilihan Bilik -->
             <section class="mb-8">
@@ -130,7 +139,6 @@
 
                 <!-- Grid 3 Kad Bergambar -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <!-- Kad 1 -->
                     <div onclick="pilihBilik('Bilik Mesyuarat Utama')" class="group relative h-52 rounded-3xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition">
                         <img src="meeting-room.png" alt="Bilik Mesyuarat Utama" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-900/25 to-transparent"></div>
@@ -144,7 +152,6 @@
                         </div>
                     </div>
 
-                    <!-- Kad 2 -->
                     <div onclick="pilihBilik('Bilik Seminar')" class="group relative h-52 rounded-3xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition">
                         <img src="meeting-room.png" alt="Bilik Seminar" class="w-full h-full object-cover object-left group-hover:scale-105 transition duration-500">
                         <div class="absolute inset-0 bg-gradient-to-t from-indigo-950/85 via-slate-900/25 to-transparent"></div>
@@ -158,7 +165,6 @@
                         </div>
                     </div>
 
-                    <!-- Kad 3 -->
                     <div onclick="pilihBilik('Bilik Perbincangan Kecil')" class="group relative h-52 rounded-3xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition">
                         <img src="meeting-room.png" alt="Bilik Perbincangan Kecil" class="w-full h-full object-cover object-right group-hover:scale-105 transition duration-500">
                         <div class="absolute inset-0 bg-gradient-to-t from-purple-950/85 via-slate-900/25 to-transparent"></div>
@@ -276,7 +282,7 @@
                                 <th class="py-3 px-3">Tarikh & Masa</th>
                                 <th class="py-3 px-3">Fasiliti</th>
                                 <th class="py-3 px-3">Pemohon & Tajuk</th>
-                                <th class="py-3 px-3 text-right">Status</th>
+                                <th class="py-3 px-3 text-right">Status & Tindakan</th>
                             </tr>
                         </thead>
                         <tbody id="bookingTable" class="divide-y divide-slate-50 text-slate-600">
@@ -291,14 +297,19 @@
         <aside class="hidden xl:flex xl:flex-col xl:w-80 bg-white border-l border-slate-100 p-6 justify-between flex-shrink-0">
             <div class="space-y-7">
                 <!-- Profil Admin -->
-                <div class="flex items-center space-x-3.5">
-                    <div class="w-12 h-12 rounded-2xl bg-amber-100 text-[#6259ca] flex items-center justify-center font-extrabold text-lg shadow-xs">
-                        A
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-100 text-[#6259ca] flex items-center justify-center font-extrabold text-lg shadow-xs">
+                            A
+                        </div>
+                        <div>
+                            <h4 class="font-extrabold text-sm text-slate-800">Alfian Zaidi</h4>
+                            <p class="text-xs text-slate-400 font-medium">Pen. Pegawai IT Kanan • MinDef</p>
+                        </div>
                     </div>
-                    <div>
-                        <h4 class="font-extrabold text-sm text-slate-800">Alfian Zaidi</h4>
-                        <p class="text-xs text-slate-400 font-medium">Pen. Pegawai IT Kanan • MinDef</p>
-                    </div>
+                    <button type="button" onclick="openAdminModal()" title="Tetapan Login Admin" class="text-slate-400 hover:text-[#6259ca] p-2">
+                        <i class="fa-solid fa-key text-xs"></i>
+                    </button>
                 </div>
 
                 <!-- Kemudahan Bilik -->
@@ -323,7 +334,7 @@
                     </div>
                 </div>
 
-                <!-- Senarai Ringkas Bilik (Sudah Dibersihkan) -->
+                <!-- Senarai Ringkas Bilik -->
                 <div>
                     <h4 class="text-sm font-extrabold text-slate-800 mb-3">Status Fasiliti</h4>
                     <div class="space-y-3">
@@ -372,8 +383,56 @@
 
     </div>
 
+    <!-- MODAL LOGIN ADMIN -->
+    <div id="adminModal" class="fixed inset-0 z-50 hidden bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-100">
+            <div class="flex items-center justify-between mb-5">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-2xl bg-[#f4f3ff] text-[#6259ca] flex items-center justify-center">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-extrabold text-slate-800">Log Masuk Admin</h3>
+                        <p class="text-xs text-slate-400">Pengurusan kelulusan tempahan bilik</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeAdminModal()" class="text-slate-400 hover:text-slate-700 p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <form id="adminLoginForm" class="space-y-4 text-xs sm:text-sm">
+                <div>
+                    <label class="block font-bold text-slate-600 mb-1">Emel Admin</label>
+                    <input type="email" id="adminEmail" required class="w-full px-4 py-2.5 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]" placeholder="admin@mindef.gov.my">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-600 mb-1">Kata Laluan</label>
+                    <input type="password" id="adminPassword" required class="w-full px-4 py-2.5 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]" placeholder="••••••••">
+                </div>
+                <p id="loginErrorMsg" class="hidden text-xs font-semibold text-rose-600 bg-rose-50 px-3 py-2 rounded-xl"></p>
+
+                <div class="flex items-center justify-end space-x-2.5 pt-2">
+                    <button type="button" onclick="closeAdminModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs transition">
+                        Batal
+                    </button>
+                    <button type="submit" id="btnAdminLogin" class="px-5 py-2.5 rounded-xl bg-[#6259ca] hover:bg-[#5249b5] text-white font-bold text-xs shadow-md shadow-[#6259ca]/25 transition">
+                        Log Masuk
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Skrip Supabase & Logik Interaktif -->
     <script>
+        const SUPABASE_URL = 'https://sawdjsujxtmyiicosxcw.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_fCnZl3czaDMOZkGmCcWYsQ_LsPvIGBA';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let isAdminLoggedIn = false;
+        let currentBookingsCache = [];
+
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('-translate-x-full');
         }
@@ -397,6 +456,110 @@
             });
         }
 
+        // --- FUNGSI ADMIN AUTH ---
+        function openAdminModal() {
+            document.getElementById('loginErrorMsg').classList.add('hidden');
+            document.getElementById('adminModal').classList.remove('hidden');
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.add('hidden');
+            document.getElementById('adminLoginForm').reset();
+        }
+
+        function handleAuthButton() {
+            if (isAdminLoggedIn) {
+                logoutAdmin();
+            } else {
+                openAdminModal();
+            }
+        }
+
+        function updateAdminUI(session) {
+            isAdminLoggedIn = !!session;
+            const banner = document.getElementById('adminModeBanner');
+            const authText = document.getElementById('authText');
+            const authIcon = document.getElementById('authIcon');
+            const sidebarLabel = document.getElementById('sidebarAdminLabel');
+
+            if (isAdminLoggedIn) {
+                banner.classList.remove('hidden');
+                document.getElementById('adminEmailDisplay').innerText = session.user.email;
+                authText.innerText = 'Log Keluar';
+                authIcon.className = 'fa-solid fa-right-from-bracket';
+                sidebarLabel.innerText = 'Admin Aktif';
+            } else {
+                banner.classList.add('hidden');
+                authText.innerText = 'Admin Login';
+                authIcon.className = 'fa-solid fa-lock';
+                sidebarLabel.innerText = 'Log Masuk Admin';
+            }
+
+            renderBookingsTable(currentBookingsCache);
+        }
+
+        document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnAdminLogin');
+            const errEl = document.getElementById('loginErrorMsg');
+            errEl.classList.add('hidden');
+            btn.disabled = true;
+            btn.innerText = 'Menyemak...';
+
+            const email = document.getElementById('adminEmail').value.trim();
+            const password = document.getElementById('adminPassword').value;
+
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+            btn.disabled = false;
+            btn.innerText = 'Log Masuk';
+
+            if (error) {
+                errEl.innerText = 'Emel atau kata laluan tidak sah.';
+                errEl.classList.remove('hidden');
+            } else {
+                closeAdminModal();
+                updateAdminUI(data.session);
+            }
+        });
+
+        async function logoutAdmin() {
+            await supabaseClient.auth.signOut();
+            updateAdminUI(null);
+        }
+
+        async function updateBookingStatus(id, newStatus) {
+            if (!isAdminLoggedIn) return openAdminModal();
+
+            const { error } = await supabaseClient
+                .from('tempahan')
+                .update({ status: newStatus })
+                .eq('id', id);
+
+            if (error) {
+                alert('Gagal kemas kini status: ' + error.message);
+            } else {
+                loadBookings();
+            }
+        }
+
+        async function deleteBooking(id) {
+            if (!isAdminLoggedIn) return openAdminModal();
+            if (!confirm('Padam rekod tempahan ini secara kekal?')) return;
+
+            const { error } = await supabaseClient
+                .from('tempahan')
+                .delete()
+                .eq('id', id);
+
+            if (error) {
+                alert('Gagal padam rekod: ' + error.message);
+            } else {
+                loadBookings();
+            }
+        }
+
+        // --- MINI KALENDAR ---
         function renderMiniCalendar(bookedDates = []) {
             const now = new Date();
             const year = now.getFullYear();
@@ -436,12 +599,11 @@
             document.getElementById('bookingSection').scrollIntoView({ behavior: 'smooth' });
         }
 
-        const SUPABASE_URL = 'https://sawdjsujxtmyiicosxcw.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_fCnZl3czaDMOZkGmCcWYsQ_LsPvIGBA';
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        document.addEventListener('DOMContentLoaded', () => {
+        // --- DATA TEMPAHAN ---
+        document.addEventListener('DOMContentLoaded', async () => {
             renderMiniCalendar();
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            updateAdminUI(session);
             loadBookings();
         });
 
@@ -456,24 +618,44 @@
                 return;
             }
 
-            const tbody = document.getElementById('bookingTable');
-            document.getElementById('statTotal').innerText = data.length;
-            const pendingCount = data.filter(b => b.status === 'Menunggu Kelulusan').length;
+            currentBookingsCache = data || [];
+            document.getElementById('statTotal').innerText = currentBookingsCache.length;
+            const pendingCount = currentBookingsCache.filter(b => b.status === 'Menunggu Kelulusan').length;
             document.getElementById('statPending').innerText = pendingCount;
 
-            const bookedDates = data.map(b => b.tarikh);
+            const bookedDates = currentBookingsCache.map(b => b.tarikh);
             renderMiniCalendar(bookedDates);
+            renderBookingsTable(currentBookingsCache);
+        }
 
-            if (data.length === 0) {
+        function renderBookingsTable(records) {
+            const tbody = document.getElementById('bookingTable');
+
+            if (!records || records.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="4" class="text-center py-6 text-slate-400">Tiada rekod tempahan dijumpai.</td></tr>';
                 return;
             }
 
             tbody.innerHTML = '';
-            data.forEach(b => {
+            records.forEach(b => {
+                const statusText = b.status || 'Diluluskan';
                 let badgeColor = 'bg-emerald-50 text-emerald-600';
-                if (b.status === 'Menunggu Kelulusan') badgeColor = 'bg-amber-50 text-amber-600';
-                if (b.status === 'Ditolak') badgeColor = 'bg-rose-50 text-rose-600';
+                if (statusText === 'Menunggu Kelulusan') badgeColor = 'bg-amber-50 text-amber-600';
+                if (statusText === 'Ditolak') badgeColor = 'bg-rose-50 text-rose-600';
+
+                const adminControls = isAdminLoggedIn ? `
+                    <div class="mt-2 flex items-center justify-end space-x-1.5">
+                        <button type="button" onclick="updateBookingStatus(${b.id}, 'Diluluskan')" title="Luluskan" class="px-2 py-1 rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-700 text-[10px] font-bold transition">
+                            Lulus
+                        </button>
+                        <button type="button" onclick="updateBookingStatus(${b.id}, 'Ditolak')" title="Tolak" class="px-2 py-1 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-700 text-[10px] font-bold transition">
+                            Tolak
+                        </button>
+                        <button type="button" onclick="deleteBooking(${b.id})" title="Padam" class="px-2 py-1 rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-700 text-[10px] font-bold transition">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                ` : '';
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-[#fafbfe] transition">
@@ -487,7 +669,8 @@
                             <div class="text-[11px] text-slate-400">${b.nama_pemohon} (${b.unit})</div>
                         </td>
                         <td class="py-3.5 px-3 text-right">
-                            <span class="px-3 py-1 rounded-full text-[11px] font-bold ${badgeColor}">${b.status || 'Diluluskan'}</span>
+                            <span class="px-3 py-1 rounded-full text-[11px] font-bold ${badgeColor}">${statusText}</span>
+                            ${adminControls}
                         </td>
                     </tr>
                 `;
