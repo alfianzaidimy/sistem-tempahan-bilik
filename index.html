@@ -41,33 +41,40 @@
                 </div>
 
                 <!-- Menu Navigasi -->
-                <nav class="space-y-2 text-sm font-semibold">
-                    <a href="#topSection" onclick="closeMobileMenu()" class="flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl bg-[#6259ca] text-white shadow-lg shadow-[#6259ca]/25 transition">
+                <nav class="space-y-1.5 text-sm font-semibold">
+                    <a href="#topSection" onclick="closeMobileMenu()" class="flex items-center space-x-3.5 px-4 py-3 rounded-2xl bg-[#6259ca] text-white shadow-lg shadow-[#6259ca]/25 transition">
                         <i class="fa-solid fa-house w-4 text-center"></i>
                         <span>Fasiliti & Bilik</span>
                     </a>
-                    <a href="#bookingSection" onclick="closeMobileMenu()" class="flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-slate-400 hover:text-[#6259ca] hover:bg-slate-50 transition">
+                    <a href="#bookingSection" onclick="closeMobileMenu()" class="flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-400 hover:text-[#6259ca] hover:bg-slate-50 transition">
                         <i class="fa-solid fa-file-signature w-4 text-center"></i>
                         <span>Mohon Tempahan</span>
                     </a>
-                    <a href="#calendarSection" onclick="closeMobileMenu()" class="flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-slate-400 hover:text-[#6259ca] hover:bg-slate-50 transition">
+                    <a href="#calendarSection" onclick="closeMobileMenu()" class="flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-400 hover:text-[#6259ca] hover:bg-slate-50 transition">
                         <i class="fa-solid fa-calendar-days w-4 text-center"></i>
                         <span>Tarikh Tersedia</span>
                     </a>
-                    <a href="#tableSection" onclick="closeMobileMenu()" class="flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-slate-400 hover:text-[#6259ca] hover:bg-slate-50 transition">
+                    <a href="#tableSection" onclick="closeMobileMenu()" class="flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-400 hover:text-[#6259ca] hover:bg-slate-50 transition">
                         <i class="fa-solid fa-list-check w-4 text-center"></i>
                         <span>Rekod Tempahan</span>
                     </a>
 
-                    <!-- Menu Khusus Super User: Daftar & Urus User -->
-                    <button type="button" id="menuRegisterUser" onclick="openRegisterUserModal()" class="hidden w-full flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-indigo-700 bg-[#f4f3ff] hover:bg-indigo-100 transition text-left">
-                        <i class="fa-solid fa-user-plus w-4 text-center"></i>
-                        <span>Daftar User / Admin</span>
+                    <!-- Menu Edit Profil Sendiri (Untuk User Aktif) -->
+                    <button type="button" id="menuEditProfile" onclick="openEditProfileModal()" class="hidden w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-500 hover:text-[#6259ca] hover:bg-slate-50 transition text-left">
+                        <i class="fa-solid fa-id-card w-4 text-center"></i>
+                        <span>Edit Profil Saya</span>
                     </button>
 
-                    <button type="button" onclick="openLoginModal()" class="w-full flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-slate-400 hover:text-[#6259ca] hover:bg-slate-50 transition text-left">
+                    <!-- Menu Khusus Super User: Urus & Aktifkan User -->
+                    <button type="button" id="menuManageUsers" onclick="openManageUsersModal()" class="hidden w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-indigo-700 bg-[#f4f3ff] hover:bg-indigo-100 transition text-left">
+                        <i class="fa-solid fa-users-gear w-4 text-center"></i>
+                        <span>Pengurusan User</span>
+                    </button>
+
+                    <!-- Menu Log Masuk / Daftar -->
+                    <button type="button" id="sidebarAuthBtn" onclick="openAuthModal('login')" class="w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-400 hover:text-[#6259ca] hover:bg-slate-50 transition text-left">
                         <i class="fa-solid fa-user-shield w-4 text-center"></i>
-                        <span id="sidebarAuthLabel">Log Masuk Akaun</span>
+                        <span id="sidebarAuthLabel">Log Masuk / Daftar</span>
                     </button>
                 </nav>
             </div>
@@ -101,19 +108,24 @@
                     </div>
                 </div>
 
-                <!-- Kotak Carian, Butang Log Masuk / Daftar & Refresh -->
-                <div class="flex flex-wrap items-center gap-2.5">
+                <!-- Kotak Carian, Butang Daftar / Log Masuk & Refresh -->
+                <div class="flex flex-wrap items-center gap-2">
                     <div class="relative hidden sm:block">
-                        <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Cari rekod..." class="pl-4 pr-10 py-2.5 bg-white border border-slate-100 rounded-2xl text-xs font-medium text-slate-600 focus:outline-none focus:ring-2 focus:ring-[#6259ca]/30 w-40 md:w-48 shadow-xs">
+                        <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Cari rekod..." class="pl-4 pr-10 py-2.5 bg-white border border-slate-100 rounded-2xl text-xs font-medium text-slate-600 focus:outline-none focus:ring-2 focus:ring-[#6259ca]/30 w-36 md:w-44 shadow-xs">
                         <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-3 text-slate-400 text-xs"></i>
                     </div>
 
-                    <button type="button" id="btnTopRegister" onclick="openRegisterUserModal()" class="hidden px-3.5 py-2.5 rounded-2xl bg-indigo-50 hover:bg-indigo-100 text-[#6259ca] text-xs font-bold flex items-center space-x-1.5 transition">
+                    <button type="button" id="btnTopRegister" onclick="openAuthModal('register')" class="px-3.5 py-2.5 rounded-2xl bg-white hover:bg-[#f4f3ff] text-[#6259ca] border border-indigo-100 text-xs font-bold flex items-center space-x-1.5 shadow-xs transition">
                         <i class="fa-solid fa-user-plus"></i>
-                        <span>Daftar User</span>
+                        <span>Daftar Akaun</span>
                     </button>
 
-                    <button type="button" id="btnAuthAction" onclick="handleAuthButton()" class="px-3.5 py-2.5 rounded-2xl bg-[#f4f3ff] hover:bg-[#6259ca] text-[#6259ca] hover:text-white text-xs font-bold flex items-center space-x-2 shadow-xs transition">
+                    <button type="button" id="btnTopManageUsers" onclick="openManageUsersModal()" class="hidden px-3.5 py-2.5 rounded-2xl bg-indigo-50 hover:bg-indigo-100 text-[#6259ca] text-xs font-bold flex items-center space-x-1.5 transition">
+                        <i class="fa-solid fa-users-gear"></i>
+                        <span>Urus User</span>
+                    </button>
+
+                    <button type="button" id="btnAuthAction" onclick="handleAuthAction()" class="px-3.5 py-2.5 rounded-2xl bg-[#f4f3ff] hover:bg-[#6259ca] text-[#6259ca] hover:text-white text-xs font-bold flex items-center space-x-2 shadow-xs transition">
                         <i id="authIcon" class="fa-solid fa-right-to-bracket"></i>
                         <span id="authText">Log Masuk</span>
                     </button>
@@ -124,15 +136,21 @@
                 </div>
             </header>
 
-            <!-- Banner Status Peranan Aktif (Hanya kelihatan bila sudah log masuk) -->
+            <!-- Banner Status Sesi Aktif -->
             <div id="roleStatusBanner" class="hidden mb-6 p-4 rounded-2xl bg-[#f4f3ff] border border-indigo-100 flex flex-wrap items-center justify-between gap-3">
                 <div class="flex items-center space-x-3 text-slate-800 text-xs sm:text-sm font-bold">
                     <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span>Log masuk sebagai <span id="bannerUserName" class="text-[#6259ca]"></span> (<span id="bannerUserRole" class="uppercase"></span>)</span>
+                    <span>
+                        <span id="bannerUserName" class="text-[#6259ca]"></span>
+                        (<span id="bannerRoleText" class="uppercase"></span>) • Status: <span id="bannerAccountStatus" class="uppercase"></span>
+                    </span>
                 </div>
-                <div class="flex items-center space-x-2">
-                    <button type="button" id="btnBannerRegister" onclick="openRegisterUserModal()" class="hidden px-3 py-1.5 rounded-xl bg-[#6259ca] hover:bg-[#5249b5] text-white text-xs font-bold transition">
-                        + Daftar User Baru
+                <div class="flex flex-wrap items-center gap-2">
+                    <button type="button" id="btnBannerEditProfile" onclick="openEditProfileModal()" class="hidden px-3 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-[#6259ca] border border-indigo-200 text-xs font-bold transition">
+                        Edit Profil
+                    </button>
+                    <button type="button" id="btnBannerManageUsers" onclick="openManageUsersModal()" class="hidden px-3 py-1.5 rounded-xl bg-[#6259ca] hover:bg-[#5249b5] text-white text-xs font-bold transition">
+                        Urus & Aktifkan User
                     </button>
                     <button type="button" onclick="logoutUser()" class="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold transition">
                         Log Keluar
@@ -147,14 +165,12 @@
                     <a href="#bookingSection" class="text-xs font-bold text-[#6259ca] hover:underline">Lihat semua &gt;</a>
                 </div>
 
-                <!-- Tab Filter Kecil -->
                 <div class="flex items-center space-x-6 text-xs font-bold mb-4 border-b border-slate-100 pb-2">
                     <span class="text-slate-800 border-b-2 border-[#6259ca] pb-2 -mb-2.5 cursor-pointer">Paling Popular</span>
                     <span class="text-slate-400 hover:text-slate-600 cursor-pointer">Kapasiti Besar</span>
                     <span class="text-slate-400 hover:text-slate-600 cursor-pointer">Aras 5 Wisma</span>
                 </div>
 
-                <!-- Grid 3 Kad Bergambar -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div onclick="pilihBilik('Bilik Mesyuarat Utama')" class="group relative h-52 rounded-3xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition">
                         <img src="meeting-room.png" alt="Bilik Mesyuarat Utama" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
@@ -210,9 +226,7 @@
                     <div class="grid grid-cols-7 text-center text-[11px] font-bold text-slate-400 mb-2">
                         <span>Isn</span><span>Sel</span><span>Rab</span><span>Kha</span><span>Jum</span><span>Sab</span><span>Aha</span>
                     </div>
-                    <div id="miniCalendarGrid" class="grid grid-cols-7 gap-1.5 text-center text-xs font-semibold text-slate-600">
-                        <!-- Dijana oleh JS -->
-                    </div>
+                    <div id="miniCalendarGrid" class="grid grid-cols-7 gap-1.5 text-center text-xs font-semibold text-slate-600"></div>
                     <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
                         <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-[#6259ca] mr-1.5"></span> Ada Tempahan</span>
                         <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-slate-200 mr-1.5"></span> Kosong</span>
@@ -316,16 +330,17 @@
                 <!-- Profil Pengguna / Pelawat -->
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-3.5">
-                        <div id="profileAvatar" class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-600 flex items-center justify-center font-extrabold text-lg shadow-xs">
-                            P
+                        <div id="profileAvatarBox" class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-600 flex items-center justify-center font-extrabold text-lg shadow-xs overflow-hidden">
+                            <span id="profileInitial">P</span>
+                            <img id="profileAvatarImg" src="" alt="Avatar" class="hidden w-full h-full object-cover">
                         </div>
                         <div>
                             <h4 id="profileName" class="font-extrabold text-sm text-slate-800">Pelawat</h4>
-                            <p id="profileRoleDesc" class="text-xs text-slate-400 font-medium">Akses Umum • MinDef</p>
+                            <p id="profileRoleDesc" class="text-xs text-slate-400 font-medium">Akses Umum • Belum Log Masuk</p>
                         </div>
                     </div>
-                    <button type="button" onclick="openLoginModal()" title="Log Masuk Akaun" class="text-slate-400 hover:text-[#6259ca] p-2">
-                        <i class="fa-solid fa-key text-xs"></i>
+                    <button type="button" id="btnRightProfileAction" onclick="openAuthModal('login')" title="Log Masuk / Edit Profil" class="text-slate-400 hover:text-[#6259ca] p-2">
+                        <i id="rightProfileIcon" class="fa-solid fa-key text-xs"></i>
                     </button>
                 </div>
 
@@ -333,21 +348,11 @@
                 <div>
                     <h4 class="text-sm font-extrabold text-slate-800 mb-3">Kemudahan Disediakan</h4>
                     <div class="grid grid-cols-3 gap-2.5">
-                        <div class="h-12 rounded-2xl bg-[#f4f3ff] text-[#6259ca] flex items-center justify-center text-base" title="Wi-Fi Kelajuan Tinggi">
-                            <i class="fa-solid fa-wifi"></i>
-                        </div>
-                        <div class="h-12 rounded-2xl bg-[#f4f3ff] text-[#6259ca] flex items-center justify-center text-base" title="Projektor & Smart TV">
-                            <i class="fa-solid fa-tv"></i>
-                        </div>
-                        <div class="h-12 rounded-2xl bg-[#f4f3ff] text-[#6259ca] flex items-center justify-center text-base" title="Sistem Audio & Mikrofon">
-                            <i class="fa-solid fa-microphone-lines"></i>
-                        </div>
-                        <div class="h-12 rounded-2xl bg-[#f4f3ff] text-[#6259ca] flex items-center justify-center text-base" title="Sidang Video">
-                            <i class="fa-solid fa-video"></i>
-                        </div>
-                        <div class="h-12 rounded-2xl border-2 border-dashed border-slate-200 text-slate-400 flex items-center justify-center text-sm">
-                            <i class="fa-solid fa-plus"></i>
-                        </div>
+                        <div class="h-12 rounded-2xl bg-[#f4f3ff] text-[#6259ca] flex items-center justify-center text-base" title="Wi-Fi Kelajuan Tinggi"><i class="fa-solid fa-wifi"></i></div>
+                        <div class="h-12 rounded-2xl bg-[#f4f3ff] text-[#6259ca] flex items-center justify-center text-base" title="Projektor & Smart TV"><i class="fa-solid fa-tv"></i></div>
+                        <div class="h-12 rounded-2xl bg-[#f4f3ff] text-[#6259ca] flex items-center justify-center text-base" title="Sistem Audio & Mikrofon"><i class="fa-solid fa-microphone-lines"></i></div>
+                        <div class="h-12 rounded-2xl bg-[#f4f3ff] text-[#6259ca] flex items-center justify-center text-base" title="Sidang Video"><i class="fa-solid fa-video"></i></div>
+                        <div class="h-12 rounded-2xl border-2 border-dashed border-slate-200 text-slate-400 flex items-center justify-center text-sm"><i class="fa-solid fa-plus"></i></div>
                     </div>
                 </div>
 
@@ -400,27 +405,29 @@
 
     </div>
 
-    <!-- MODAL LOG MASUK -->
-    <div id="loginModal" class="fixed inset-0 z-50 hidden bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-md rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-100">
-            <div class="flex items-center justify-between mb-5">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-2xl bg-[#f4f3ff] text-[#6259ca] flex items-center justify-center">
-                        <i class="fa-solid fa-user-shield"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-base font-extrabold text-slate-800">Log Masuk Sistem</h3>
-                        <p class="text-xs text-slate-400">Akses mengikut peranan pengguna berdaftar</p>
-                    </div>
+    <!-- MODAL LOG MASUK & PENDAFTARAN USER BARU -->
+    <div id="authModal" class="fixed inset-0 z-50 hidden bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white w-full max-w-lg rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-100 my-8">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h3 id="authModalTitle" class="text-base font-extrabold text-slate-800">Log Masuk Sistem</h3>
+                    <p class="text-xs text-slate-400">Akses akaun atau pendaftaran pengguna baharu</p>
                 </div>
-                <button type="button" onclick="closeLoginModal()" class="text-slate-400 hover:text-slate-700 p-1">
+                <button type="button" onclick="closeAuthModal()" class="text-slate-400 hover:text-slate-700 p-1">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
 
+            <!-- Tab Log Masuk / Daftar Baru -->
+            <div class="grid grid-cols-2 gap-2 p-1 bg-[#f4f3ff] rounded-2xl mb-5 text-xs font-bold">
+                <button type="button" id="tabLogin" onclick="switchAuthTab('login')" class="py-2 rounded-xl bg-[#6259ca] text-white transition">Log Masuk</button>
+                <button type="button" id="tabRegister" onclick="switchAuthTab('register')" class="py-2 rounded-xl text-[#6259ca] transition">Daftar Akaun Baru</button>
+            </div>
+
+            <!-- Borang Log Masuk -->
             <form id="loginForm" class="space-y-4 text-xs sm:text-sm">
                 <div>
-                    <label class="block font-bold text-slate-600 mb-1">Emel Pengguna</label>
+                    <label class="block font-bold text-slate-600 mb-1">Emel Rasmi</label>
                     <input type="email" id="loginEmail" required class="w-full px-4 py-2.5 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]" placeholder="nama@mindef.gov.my">
                 </div>
                 <div>
@@ -430,103 +437,238 @@
                 <p id="loginErrorMsg" class="hidden text-xs font-semibold text-rose-600 bg-rose-50 px-3 py-2 rounded-xl"></p>
 
                 <div class="flex items-center justify-end space-x-2.5 pt-2">
-                    <button type="button" onclick="closeLoginModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs transition">
-                        Batal
-                    </button>
-                    <button type="submit" id="btnLoginSubmit" class="px-5 py-2.5 rounded-xl bg-[#6259ca] hover:bg-[#5249b5] text-white font-bold text-xs shadow-md shadow-[#6259ca]/25 transition">
-                        Log Masuk
-                    </button>
+                    <button type="button" onclick="closeAuthModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs transition">Batal</button>
+                    <button type="submit" id="btnLoginSubmit" class="px-5 py-2.5 rounded-xl bg-[#6259ca] hover:bg-[#5249b5] text-white font-bold text-xs shadow-md shadow-[#6259ca]/25 transition">Log Masuk</button>
                 </div>
             </form>
-        </div>
-    </div>
 
-    <!-- MODAL PENDAFTARAN USER BARU & KAWALAN PERANAN (KHUSUS SUPER USER) -->
-    <div id="registerUserModal" class="fixed inset-0 z-50 hidden bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-white w-full max-w-2xl rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-100 my-8">
-            <div class="flex items-center justify-between mb-5">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-2xl bg-[#f4f3ff] text-[#6259ca] flex items-center justify-center">
-                        <i class="fa-solid fa-user-plus"></i>
+            <!-- Borang Daftar Akaun Baru -->
+            <form id="registerForm" class="hidden space-y-3 text-xs">
+                <div class="flex items-center space-x-4">
+                    <div class="w-16 h-16 rounded-2xl bg-[#f4f3ff] border border-indigo-100 flex items-center justify-center overflow-hidden shrink-0">
+                        <img id="regAvatarPreview" src="" alt="Pratonton Avatar" class="hidden w-full h-full object-cover">
+                        <i id="regAvatarPlaceholder" class="fa-solid fa-user text-[#6259ca] text-xl"></i>
                     </div>
-                    <div>
-                        <h3 class="text-base font-extrabold text-slate-800">Pendaftaran Pengguna Baru & Peranan</h3>
-                        <p class="text-xs text-slate-400">Hanya Super User boleh mendaftar dan menetapkan peranan Admin / User</p>
+                    <div class="flex-1">
+                        <label class="block font-bold text-slate-600 mb-1">Foto Avatar</label>
+                        <input type="file" id="regAvatarFile" accept="image/*" onchange="previewAvatar(this, 'regAvatarPreview', 'regAvatarPlaceholder')" class="w-full text-[11px] text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-[#f4f3ff] file:text-[#6259ca]">
                     </div>
                 </div>
-                <button type="button" onclick="closeRegisterUserModal()" class="text-slate-400 hover:text-slate-700 p-1">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
 
-            <form id="registerUserForm" class="space-y-4 text-xs sm:text-sm mb-6 pb-6 border-b border-slate-100">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                        <label class="block font-bold text-slate-600 mb-1">Nama Penuh Pengguna</label>
-                        <input type="text" id="newUserName" required class="w-full px-4 py-2.5 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]" placeholder="Contoh: Siti Rahayu">
+                        <label class="block font-bold text-slate-600 mb-1">Nama Penuh</label>
+                        <input type="text" id="regFullName" required class="w-full px-3.5 py-2 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]" placeholder="Nama penuh anda">
                     </div>
                     <div>
-                        <label class="block font-bold text-slate-600 mb-1">Tetapkan Peranan</label>
-                        <select id="newUserRole" required class="w-full px-4 py-2.5 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]">
-                            <option value="user">User (Pemohon Sahaja)</option>
-                            <option value="admin">Admin (Kelulusan & Urus Tempahan)</option>
-                        </select>
+                        <label class="block font-bold text-slate-600 mb-1">Seksyen / Unit</label>
+                        <input type="text" id="regSectionUnit" required class="w-full px-3.5 py-2 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]" placeholder="Cth: Seksyen Kewangan / Unit IT">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-600 mb-1">No. Telefon Pejabat</label>
+                        <input type="text" id="regOfficePhone" required class="w-full px-3.5 py-2 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]" placeholder="Cth: 03-2071 xxxx">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-600 mb-1">No. Handphone</label>
+                        <input type="text" id="regMobilePhone" required class="w-full px-3.5 py-2 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]" placeholder="Cth: 012-345 6789">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                         <label class="block font-bold text-slate-600 mb-1">Emel Rasmi</label>
-                        <input type="email" id="newUserEmail" required class="w-full px-4 py-2.5 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]" placeholder="pengguna@mindef.gov.my">
+                        <input type="email" id="regEmail" required class="w-full px-3.5 py-2 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]" placeholder="nama@mindef.gov.my">
                     </div>
                     <div>
-                        <label class="block font-bold text-slate-600 mb-1">Kata Laluan Awal (Min. 6 aksara)</label>
-                        <input type="password" id="newUserPassword" minlength="6" required class="w-full px-4 py-2.5 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]" placeholder="••••••••">
+                        <label class="block font-bold text-slate-600 mb-1">Kata Laluan (Min. 6 aksara)</label>
+                        <input type="password" id="regPassword" minlength="6" required class="w-full px-3.5 py-2 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]" placeholder="••••••••">
                     </div>
                 </div>
 
                 <p id="registerMsg" class="hidden text-xs font-semibold px-3.5 py-2.5 rounded-xl"></p>
 
-                <div class="flex items-center justify-end space-x-2.5">
-                    <button type="button" onclick="closeRegisterUserModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs transition">
-                        Tutup
-                    </button>
-                    <button type="submit" id="btnRegisterUser" class="px-5 py-2.5 rounded-xl bg-[#6259ca] hover:bg-[#5249b5] text-white font-bold text-xs shadow-md shadow-[#6259ca]/25 transition">
-                        Daftar Pengguna
-                    </button>
+                <div class="flex items-center justify-end space-x-2.5 pt-2">
+                    <button type="button" onclick="closeAuthModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs transition">Batal</button>
+                    <button type="submit" id="btnRegisterSubmit" class="px-5 py-2.5 rounded-xl bg-[#6259ca] hover:bg-[#5249b5] text-white font-bold text-xs shadow-md shadow-[#6259ca]/25 transition">Hantar Pendaftaran</button>
                 </div>
             </form>
+        </div>
+    </div>
 
-            <!-- Senarai Pengguna Berdaftar (Hanya Super User boleh ubah peranan User <-> Admin; Super User dilindungi) -->
-            <div>
-                <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-3">Senarai Akaun Berdaftar</h4>
-                <div class="overflow-x-auto max-h-56">
-                    <table class="w-full text-left border-collapse text-xs">
-                        <thead>
-                            <tr class="border-b border-slate-100 text-slate-400">
-                                <th class="py-2 px-2">Nama & Emel</th>
-                                <th class="py-2 px-2">Peranan</th>
-                                <th class="py-2 px-2 text-right">Tindakan</th>
-                            </tr>
-                        </thead>
-                        <tbody id="usersListBody" class="divide-y divide-slate-50">
-                            <tr><td colspan="3" class="py-4 text-center text-slate-400">Memuatkan senarai pengguna...</td></tr>
-                        </tbody>
-                    </table>
+    <!-- MODAL EDIT PROFIL SENDIRI (SEMUA USER AKTIF) -->
+    <div id="editProfileModal" class="fixed inset-0 z-50 hidden bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white w-full max-w-lg rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-100 my-8">
+            <div class="flex items-center justify-between mb-5">
+                <div>
+                    <h3 class="text-base font-extrabold text-slate-800">Edit Profil Akaun Saya</h3>
+                    <p class="text-xs text-slate-400">Kemas kini maklumat perhubungan, unit dan foto avatar</p>
                 </div>
+                <button type="button" onclick="closeEditProfileModal()" class="text-slate-400 hover:text-slate-700 p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <form id="editProfileForm" class="space-y-3.5 text-xs">
+                <div class="flex items-center space-x-4">
+                    <div class="w-16 h-16 rounded-2xl bg-[#f4f3ff] border border-indigo-100 flex items-center justify-center overflow-hidden shrink-0">
+                        <img id="editAvatarPreview" src="" alt="Avatar" class="hidden w-full h-full object-cover">
+                        <i id="editAvatarPlaceholder" class="fa-solid fa-user text-[#6259ca] text-xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block font-bold text-slate-600 mb-1">Tukar Foto Avatar</label>
+                        <input type="file" id="editAvatarFile" accept="image/*" onchange="previewAvatar(this, 'editAvatarPreview', 'editAvatarPlaceholder')" class="w-full text-[11px] text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-[#f4f3ff] file:text-[#6259ca]">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-600 mb-1">Nama Penuh</label>
+                        <input type="text" id="editFullName" required class="w-full px-3.5 py-2.5 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-600 mb-1">Seksyen / Unit</label>
+                        <input type="text" id="editSectionUnit" required class="w-full px-3.5 py-2.5 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-600 mb-1">No. Telefon Pejabat</label>
+                        <input type="text" id="editOfficePhone" required class="w-full px-3.5 py-2.5 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-600 mb-1">No. Handphone</label>
+                        <input type="text" id="editMobilePhone" required class="w-full px-3.5 py-2.5 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-600 mb-1">Emel</label>
+                    <input type="email" id="editEmail" required class="w-full px-3.5 py-2.5 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]">
+                </div>
+
+                <p id="editProfileMsg" class="hidden text-xs font-semibold px-3.5 py-2.5 rounded-xl"></p>
+
+                <div class="flex items-center justify-end space-x-2.5 pt-2">
+                    <button type="button" onclick="closeEditProfileModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs transition">Batal</button>
+                    <button type="submit" id="btnSaveProfile" class="px-5 py-2.5 rounded-xl bg-[#6259ca] hover:bg-[#5249b5] text-white font-bold text-xs shadow-md shadow-[#6259ca]/25 transition">Simpan Profil</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL PENGURUSAN USER (KHUSUS SUPER USER) -->
+    <div id="manageUsersModal" class="fixed inset-0 z-50 hidden bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white w-full max-w-4xl rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-100 my-8">
+            <div class="flex items-center justify-between mb-5">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-2xl bg-[#f4f3ff] text-[#6259ca] flex items-center justify-center">
+                        <i class="fa-solid fa-users-gear"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-extrabold text-slate-800">Pengurusan Pengguna & Kelulusan Akaun</h3>
+                        <p class="text-xs text-slate-400">Aktifkan user berdaftar, tetapkan peranan Admin/User, atau padam user (Super User dilindungi)</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeManageUsersModal()" class="text-slate-400 hover:text-slate-700 p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div class="overflow-x-auto max-h-[60vh]">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="border-b border-slate-100 text-slate-400 uppercase text-[10px] tracking-wider">
+                            <th class="py-2.5 px-2">Pengguna & Hubungan</th>
+                            <th class="py-2.5 px-2">Seksyen / Unit</th>
+                            <th class="py-2.5 px-2">Status Akaun</th>
+                            <th class="py-2.5 px-2">Peranan</th>
+                            <th class="py-2.5 px-2 text-right">Tindakan Super User</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersManagementBody" class="divide-y divide-slate-50">
+                        <tr><td colspan="5" class="py-6 text-center text-slate-400">Memuatkan data pengguna...</td></tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 
-    <!-- Skrip Supabase & Logik Interaktif -->
+    <!-- MODAL UBAH DETAIL MESYUARAT / PINDA TARIKH (ADMIN & SUPER USER) -->
+    <div id="editBookingModal" class="fixed inset-0 z-50 hidden bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white w-full max-w-lg rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-100 my-8">
+            <div class="flex items-center justify-between mb-5">
+                <div>
+                    <h3 class="text-base font-extrabold text-slate-800">Ubah Detail Mesyuarat & Pinda Tarikh</h3>
+                    <p class="text-xs text-slate-400">Kemaskini maklumat tempahan bilik secara langsung</p>
+                </div>
+                <button type="button" onclick="closeEditBookingModal()" class="text-slate-400 hover:text-slate-700 p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <form id="editBookingForm" class="space-y-3.5 text-xs">
+                <input type="hidden" id="editBookingId">
+
+                <div>
+                    <label class="block font-bold text-slate-600 mb-1">Fasiliti Bilik</label>
+                    <select id="editBookingFacility" required class="w-full px-3.5 py-2.5 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]">
+                        <option value="Bilik Mesyuarat Utama">Bilik Mesyuarat Utama (30 Orang)</option>
+                        <option value="Bilik Seminar">Bilik Seminar (50 Orang)</option>
+                        <option value="Bilik Perbincangan Kecil">Bilik Perbincangan Kecil (10 Orang)</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-3 gap-2.5">
+                    <div>
+                        <label class="block font-bold text-slate-600 mb-1">Pinda Tarikh</label>
+                        <input type="date" id="editBookingDate" required class="w-full px-3 py-2 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-600 mb-1">Masa Mula</label>
+                        <input type="time" id="editBookingStart" required class="w-full px-3 py-2 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-600 mb-1">Masa Tamat</label>
+                        <input type="time" id="editBookingEnd" required class="w-full px-3 py-2 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-600 mb-1">Tajuk Mesyuarat / Program</label>
+                    <input type="text" id="editBookingTitle" required class="w-full px-3.5 py-2.5 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-600 mb-1">Pemohon</label>
+                        <input type="text" id="editBookingApplicant" required class="w-full px-3.5 py-2.5 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-600 mb-1">Bahagian / Unit</label>
+                        <input type="text" id="editBookingUnit" required class="w-full px-3.5 py-2.5 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]">
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end space-x-2.5 pt-2">
+                    <button type="button" onclick="closeEditBookingModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs transition">Batal</button>
+                    <button type="submit" id="btnSaveBookingEdit" class="px-5 py-2.5 rounded-xl bg-[#6259ca] hover:bg-[#5249b5] text-white font-bold text-xs shadow-md shadow-[#6259ca]/25 transition">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Skrip Supabase & Logik Sistem -->
     <script>
         const SUPABASE_URL = 'https://sawdjsujxtmyiicosxcw.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_fCnZl3czaDMOZkGmCcWYsQ_LsPvIGBA';
 
-        // Client utama untuk sesi pengguna aktif
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Client berasingan untuk mendaftar user baharu supaya sesi Super User tidak terganggu
+        // Client berasingan untuk proses pendaftaran supaya sesi pengguna aktif tidak diganti secara automatik
         const supabaseSignupClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
             auth: {
                 persistSession: false,
@@ -536,20 +678,24 @@
         });
 
         let currentSession = null;
-        let currentProfile = null; // { id, email, full_name, role }
+        let currentProfile = null;
         let currentBookingsCache = [];
 
         function getRole() {
-            return currentProfile?.role || 'guest'; // 'guest' | 'user' | 'admin' | 'super_user'
+            if (!currentSession || !currentProfile) return 'guest';
+            return currentProfile.role || 'user';
         }
 
-        function canManageBookings() {
-            const role = getRole();
-            return role === 'admin' || role === 'super_user';
+        function isActiveAccount() {
+            return !!currentSession && currentProfile?.account_status === 'active';
         }
 
         function isSuperUser() {
-            return getRole() === 'super_user';
+            return isActiveAccount() && getRole() === 'super_user';
+        }
+
+        function canManageBookings() {
+            return isActiveAccount() && (getRole() === 'admin' || getRole() === 'super_user');
         }
 
         function toggleSidebar() {
@@ -575,12 +721,46 @@
             });
         }
 
-        // --- KEMAS KINI PAPARAN MENGIKUT PERANAN ---
+        function previewAvatar(input, imgId, iconId) {
+            const file = input.files?.[0];
+            const imgEl = document.getElementById(imgId);
+            const iconEl = document.getElementById(iconId);
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imgEl.src = e.target.result;
+                imgEl.classList.remove('hidden');
+                if (iconEl) iconEl.classList.add('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function uploadAvatarFile(file, prefixName = 'user') {
+            if (!file) return null;
+            const ext = file.name.split('.').pop() || 'png';
+            const filePath = `${prefixName}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
+
+            const { error } = await supabaseClient.storage
+                .from('avatars')
+                .upload(filePath, file, { upsert: true });
+
+            if (error) {
+                console.error('Ralat muat naik avatar:', error);
+                return null;
+            }
+
+            const { data } = supabaseClient.storage.from('avatars').getPublicUrl(filePath);
+            return data?.publicUrl || null;
+        }
+
+        // --- KEMAS KINI UI MENGIKUT STATUS & PERANAN ---
         function applyRoleUI() {
-            const role = getRole();
             const greetingTitle = document.getElementById('greetingTitle');
             const greetingSubtitle = document.getElementById('greetingSubtitle');
-            const profileAvatar = document.getElementById('profileAvatar');
+            const profileInitial = document.getElementById('profileInitial');
+            const profileAvatarImg = document.getElementById('profileAvatarImg');
+            const profileAvatarBox = document.getElementById('profileAvatarBox');
             const profileName = document.getElementById('profileName');
             const profileRoleDesc = document.getElementById('profileRoleDesc');
 
@@ -588,61 +768,98 @@
             const authText = document.getElementById('authText');
             const authIcon = document.getElementById('authIcon');
             const sidebarAuthLabel = document.getElementById('sidebarAuthLabel');
+            const rightIcon = document.getElementById('rightProfileIcon');
+            const rightBtn = document.getElementById('btnRightProfileAction');
 
-            const menuRegisterUser = document.getElementById('menuRegisterUser');
-            const btnTopRegister = document.getElementById('btnTopRegister');
-            const btnBannerRegister = document.getElementById('btnBannerRegister');
+            const menuEditProfile = document.getElementById('menuEditProfile');
+            const menuManageUsers = document.getElementById('menuManageUsers');
+            const btnTopManageUsers = document.getElementById('btnTopManageUsers');
+            const btnBannerManageUsers = document.getElementById('btnBannerManageUsers');
+            const btnBannerEditProfile = document.getElementById('btnBannerEditProfile');
 
-            if (role === 'guest') {
+            if (!currentSession) {
                 greetingTitle.innerText = 'Hello, Pelawat';
-                greetingSubtitle.innerText = 'Selamat datang ke Sistem Tempahan Bilik MinDef! Sila isi borang untuk membuat tempahan.';
+                greetingSubtitle.innerText = 'Selamat datang ke Sistem Tempahan Bilik MinDef!';
 
-                profileAvatar.innerText = 'P';
-                profileAvatar.className = 'w-12 h-12 rounded-2xl bg-slate-100 text-slate-600 flex items-center justify-center font-extrabold text-lg shadow-xs';
+                profileInitial.innerText = 'P';
+                profileInitial.classList.remove('hidden');
+                profileAvatarImg.classList.add('hidden');
+                profileAvatarBox.className = 'w-12 h-12 rounded-2xl bg-slate-100 text-slate-600 flex items-center justify-center font-extrabold text-lg shadow-xs overflow-hidden';
                 profileName.innerText = 'Pelawat';
                 profileRoleDesc.innerText = 'Akses Umum • Belum Log Masuk';
 
                 banner.classList.add('hidden');
                 authText.innerText = 'Log Masuk';
                 authIcon.className = 'fa-solid fa-right-to-bracket';
-                sidebarAuthLabel.innerText = 'Log Masuk Akaun';
+                sidebarAuthLabel.innerText = 'Log Masuk / Daftar';
+                rightIcon.className = 'fa-solid fa-key text-xs';
+                rightBtn.onclick = () => openAuthModal('login');
 
-                menuRegisterUser.classList.add('hidden');
-                btnTopRegister.classList.add('hidden');
-                btnBannerRegister.classList.add('hidden');
+                menuEditProfile.classList.add('hidden');
+                menuManageUsers.classList.add('hidden');
+                btnTopManageUsers.classList.add('hidden');
+                btnBannerManageUsers.classList.add('hidden');
+                btnBannerEditProfile.classList.add('hidden');
             } else {
-                const displayName = currentProfile?.full_name || currentSession?.user?.email || 'Pengguna';
-                const initial = displayName.trim().charAt(0).toUpperCase() || 'U';
+                const name = currentProfile?.full_name || currentSession.user.email;
+                const role = currentProfile?.role || 'user';
+                const status = currentProfile?.account_status || 'pending';
+
                 const roleLabelMap = {
                     super_user: 'Super User',
                     admin: 'Admin',
-                    user: 'Pengguna Berdaftar'
+                    user: 'User Berdaftar'
                 };
 
-                greetingTitle.innerText = `Hello, ${displayName}`;
-                greetingSubtitle.innerText = `Peranan aktif: ${roleLabelMap[role] || role} • Sistem Tempahan Bilik MinDef`;
+                greetingTitle.innerText = `Hello, ${name}`;
+                greetingSubtitle.innerText = status === 'active'
+                    ? `Akaun Aktif (${roleLabelMap[role] || role}) • Sistem Tempahan Bilik MinDef`
+                    : `Akaun Menunggu Pengaktifan Super User • Sistem Tempahan Bilik MinDef`;
 
-                profileAvatar.innerText = initial;
-                profileAvatar.className = 'w-12 h-12 rounded-2xl bg-amber-100 text-[#6259ca] flex items-center justify-center font-extrabold text-lg shadow-xs';
-                profileName.innerText = displayName;
-                profileRoleDesc.innerText = `${roleLabelMap[role] || role} • MinDef`;
+                profileName.innerText = name;
+                profileRoleDesc.innerText = `${roleLabelMap[role] || role} • ${status.toUpperCase()}`;
+
+                if (currentProfile?.avatar_url) {
+                    profileAvatarImg.src = currentProfile.avatar_url;
+                    profileAvatarImg.classList.remove('hidden');
+                    profileInitial.classList.add('hidden');
+                } else {
+                    profileInitial.innerText = name.trim().charAt(0).toUpperCase() || 'U';
+                    profileInitial.classList.remove('hidden');
+                    profileAvatarImg.classList.add('hidden');
+                }
+                profileAvatarBox.className = 'w-12 h-12 rounded-2xl bg-amber-100 text-[#6259ca] flex items-center justify-center font-extrabold text-lg shadow-xs overflow-hidden';
 
                 banner.classList.remove('hidden');
-                document.getElementById('bannerUserName').innerText = displayName;
-                document.getElementById('bannerUserRole').innerText = roleLabelMap[role] || role;
+                document.getElementById('bannerUserName').innerText = name;
+                document.getElementById('bannerRoleText').innerText = roleLabelMap[role] || role;
+                document.getElementById('bannerAccountStatus').innerText = status;
 
                 authText.innerText = 'Log Keluar';
                 authIcon.className = 'fa-solid fa-right-from-bracket';
                 sidebarAuthLabel.innerText = 'Log Keluar Akaun';
+                rightIcon.className = 'fa-solid fa-user-pen text-xs';
+                rightBtn.onclick = () => {
+                    if (isActiveAccount()) openEditProfileModal();
+                    else alert('Akaun anda masih menunggu pengaktifan oleh Super User.');
+                };
 
-                if (role === 'super_user') {
-                    menuRegisterUser.classList.remove('hidden');
-                    btnTopRegister.classList.remove('hidden');
-                    btnBannerRegister.classList.remove('hidden');
+                if (isActiveAccount()) {
+                    menuEditProfile.classList.remove('hidden');
+                    btnBannerEditProfile.classList.remove('hidden');
                 } else {
-                    menuRegisterUser.classList.add('hidden');
-                    btnTopRegister.classList.add('hidden');
-                    btnBannerRegister.classList.add('hidden');
+                    menuEditProfile.classList.add('hidden');
+                    btnBannerEditProfile.classList.add('hidden');
+                }
+
+                if (isSuperUser()) {
+                    menuManageUsers.classList.remove('hidden');
+                    btnTopManageUsers.classList.remove('hidden');
+                    btnBannerManageUsers.classList.remove('hidden');
+                } else {
+                    menuManageUsers.classList.add('hidden');
+                    btnTopManageUsers.classList.add('hidden');
+                    btnBannerManageUsers.classList.add('hidden');
                 }
             }
 
@@ -665,36 +882,67 @@
             if (!error && data) {
                 currentProfile = data;
             } else {
-                // Jika rekod profil belum wujud, wujudkan secara lalai dengan peranan 'user'
-                const fallbackProfile = {
+                const defaultProfile = {
                     id: user.id,
                     email: user.email,
                     full_name: user.user_metadata?.full_name || user.email.split('@')[0],
-                    role: 'user'
+                    office_phone: user.user_metadata?.office_phone || '',
+                    section_unit: user.user_metadata?.section_unit || '',
+                    mobile_phone: user.user_metadata?.mobile_phone || '',
+                    avatar_url: user.user_metadata?.avatar_url || '',
+                    role: 'user',
+                    account_status: 'pending'
                 };
-                await supabaseClient.from('profiles').upsert([fallbackProfile], { onConflict: 'id' });
-                currentProfile = fallbackProfile;
+                await supabaseClient.from('profiles').upsert([defaultProfile], { onConflict: 'id' });
+                currentProfile = defaultProfile;
             }
 
             applyRoleUI();
         }
 
-        // --- LOG MASUK & LOG KELUAR ---
-        function openLoginModal() {
-            document.getElementById('loginErrorMsg').classList.add('hidden');
-            document.getElementById('loginModal').classList.remove('hidden');
+        // --- MODAL LOG MASUK & PENDAFTARAN ---
+        function openAuthModal(defaultTab = 'login') {
+            document.getElementById('authModal').classList.remove('hidden');
+            switchAuthTab(defaultTab);
         }
 
-        function closeLoginModal() {
-            document.getElementById('loginModal').classList.add('hidden');
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.add('hidden');
             document.getElementById('loginForm').reset();
+            document.getElementById('registerForm').reset();
+            document.getElementById('loginErrorMsg').classList.add('hidden');
+            document.getElementById('registerMsg').classList.add('hidden');
+            document.getElementById('regAvatarPreview').classList.add('hidden');
+            document.getElementById('regAvatarPlaceholder').classList.remove('hidden');
         }
 
-        function handleAuthButton() {
+        function switchAuthTab(tab) {
+            const tabLogin = document.getElementById('tabLogin');
+            const tabRegister = document.getElementById('tabRegister');
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const title = document.getElementById('authModalTitle');
+
+            if (tab === 'register') {
+                tabRegister.className = 'py-2 rounded-xl bg-[#6259ca] text-white transition';
+                tabLogin.className = 'py-2 rounded-xl text-[#6259ca] transition';
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                title.innerText = 'Pendaftaran Akaun Pengguna Baru';
+            } else {
+                tabLogin.className = 'py-2 rounded-xl bg-[#6259ca] text-white transition';
+                tabRegister.className = 'py-2 rounded-xl text-[#6259ca] transition';
+                registerForm.classList.add('hidden');
+                loginForm.classList.remove('hidden');
+                title.innerText = 'Log Masuk Sistem';
+            }
+        }
+
+        function handleAuthAction() {
             if (currentSession) {
                 logoutUser();
             } else {
-                openLoginModal();
+                openAuthModal('login');
             }
         }
 
@@ -718,10 +966,78 @@
                 errEl.innerText = 'Emel atau kata laluan tidak sah.';
                 errEl.classList.remove('hidden');
             } else {
-                closeLoginModal();
+                closeAuthModal();
                 currentSession = data.session;
                 await fetchUserProfile(data.session.user);
             }
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnRegisterSubmit');
+            const msgEl = document.getElementById('registerMsg');
+            msgEl.classList.add('hidden');
+            btn.disabled = true;
+            btn.innerText = 'Menghantar...';
+
+            const fullName = document.getElementById('regFullName').value.trim();
+            const sectionUnit = document.getElementById('regSectionUnit').value.trim();
+            const officePhone = document.getElementById('regOfficePhone').value.trim();
+            const mobilePhone = document.getElementById('regMobilePhone').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const avatarFile = document.getElementById('regAvatarFile').files?.[0];
+
+            let avatarUrl = '';
+            if (avatarFile) {
+                avatarUrl = await uploadAvatarFile(avatarFile, 'avatar') || '';
+            }
+
+            const { data, error } = await supabaseSignupClient.auth.signUp({
+                email,
+                password,
+                options: {
+                    data: {
+                        full_name: fullName,
+                        section_unit: sectionUnit,
+                        office_phone: officePhone,
+                        mobile_phone: mobilePhone,
+                        avatar_url: avatarUrl
+                    }
+                }
+            });
+
+            if (error) {
+                btn.disabled = false;
+                btn.innerText = 'Hantar Pendaftaran';
+                msgEl.className = 'text-xs font-semibold px-3.5 py-2.5 rounded-xl bg-rose-50 text-rose-600';
+                msgEl.innerText = 'Gagal mendaftar: ' + error.message;
+                msgEl.classList.remove('hidden');
+                return;
+            }
+
+            if (data?.user) {
+                await supabaseClient.from('profiles').upsert([{
+                    id: data.user.id,
+                    email,
+                    full_name: fullName,
+                    section_unit: sectionUnit,
+                    office_phone: officePhone,
+                    mobile_phone: mobilePhone,
+                    avatar_url: avatarUrl,
+                    role: 'user',
+                    account_status: 'pending'
+                }], { onConflict: 'id' });
+            }
+
+            btn.disabled = false;
+            btn.innerText = 'Hantar Pendaftaran';
+            msgEl.className = 'text-xs font-semibold px-3.5 py-2.5 rounded-xl bg-emerald-50 text-emerald-700';
+            msgEl.innerText = 'Pendaftaran dihantar! Akaun anda menunggu pengaktifan oleh Super User.';
+            msgEl.classList.remove('hidden');
+            document.getElementById('registerForm').reset();
+            document.getElementById('regAvatarPreview').classList.add('hidden');
+            document.getElementById('regAvatarPlaceholder').classList.remove('hidden');
         });
 
         async function logoutUser() {
@@ -731,133 +1047,182 @@
             applyRoleUI();
         }
 
-        // --- PENDAFTARAN USER BARU (HANYA SUPER USER) ---
-        function openRegisterUserModal() {
-            if (!isSuperUser()) {
-                alert('Akses terhad kepada Super User sahaja.');
+        // --- EDIT PROFIL SENDIRI (SEMUA USER AKTIF) ---
+        function openEditProfileModal() {
+            if (!isActiveAccount() || !currentProfile) {
+                alert('Hanya pengguna yang telah diaktifkan boleh mengedit profil.');
                 return;
             }
-            const msgEl = document.getElementById('registerMsg');
-            msgEl.classList.add('hidden');
-            document.getElementById('registerUserModal').classList.remove('hidden');
-            loadRegisteredUsers();
+
+            document.getElementById('editFullName').value = currentProfile.full_name || '';
+            document.getElementById('editSectionUnit').value = currentProfile.section_unit || '';
+            document.getElementById('editOfficePhone').value = currentProfile.office_phone || '';
+            document.getElementById('editMobilePhone').value = currentProfile.mobile_phone || '';
+            document.getElementById('editEmail').value = currentProfile.email || currentSession.user.email || '';
+
+            const imgEl = document.getElementById('editAvatarPreview');
+            const iconEl = document.getElementById('editAvatarPlaceholder');
+            if (currentProfile.avatar_url) {
+                imgEl.src = currentProfile.avatar_url;
+                imgEl.classList.remove('hidden');
+                iconEl.classList.add('hidden');
+            } else {
+                imgEl.classList.add('hidden');
+                iconEl.classList.remove('hidden');
+            }
+
+            document.getElementById('editProfileMsg').classList.add('hidden');
+            document.getElementById('editProfileModal').classList.remove('hidden');
         }
 
-        function closeRegisterUserModal() {
-            document.getElementById('registerUserModal').classList.add('hidden');
-            document.getElementById('registerUserForm').reset();
+        function closeEditProfileModal() {
+            document.getElementById('editProfileModal').classList.add('hidden');
+            document.getElementById('editProfileForm').reset();
         }
 
-        document.getElementById('registerUserForm').addEventListener('submit', async (e) => {
+        document.getElementById('editProfileForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            if (!isSuperUser()) return;
+            if (!isActiveAccount() || !currentProfile) return;
 
-            const btn = document.getElementById('btnRegisterUser');
-            const msgEl = document.getElementById('registerMsg');
+            const btn = document.getElementById('btnSaveProfile');
+            const msgEl = document.getElementById('editProfileMsg');
             msgEl.classList.add('hidden');
             btn.disabled = true;
-            btn.innerText = 'Mendaftar...';
+            btn.innerText = 'Menyimpan...';
 
-            const fullName = document.getElementById('newUserName').value.trim();
-            const role = document.getElementById('newUserRole').value; // 'user' atau 'admin'
-            const email = document.getElementById('newUserEmail').value.trim();
-            const password = document.getElementById('newUserPassword').value;
+            const fullName = document.getElementById('editFullName').value.trim();
+            const sectionUnit = document.getElementById('editSectionUnit').value.trim();
+            const officePhone = document.getElementById('editOfficePhone').value.trim();
+            const mobilePhone = document.getElementById('editMobilePhone').value.trim();
+            const email = document.getElementById('editEmail').value.trim();
+            const avatarFile = document.getElementById('editAvatarFile').files?.[0];
 
-            // Elak mendaftarkan akaun super_user baharu melalui borang ini supaya akses Super User kekal eksklusif
-            const safeRole = role === 'admin' ? 'admin' : 'user';
-
-            const { data, error } = await supabaseSignupClient.auth.signUp({
-                email,
-                password,
-                options: {
-                    data: { full_name: fullName }
-                }
-            });
-
-            if (error) {
-                btn.disabled = false;
-                btn.innerText = 'Daftar Pengguna';
-                msgEl.className = 'text-xs font-semibold px-3.5 py-2.5 rounded-xl bg-rose-50 text-rose-600';
-                msgEl.innerText = 'Gagal mendaftar: ' + error.message;
-                msgEl.classList.remove('hidden');
-                return;
+            let avatarUrl = currentProfile.avatar_url || '';
+            if (avatarFile) {
+                const uploadedUrl = await uploadAvatarFile(avatarFile, currentProfile.id);
+                if (uploadedUrl) avatarUrl = uploadedUrl;
             }
 
-            if (data?.user) {
-                const { error: profileError } = await supabaseClient
-                    .from('profiles')
-                    .upsert([{
-                        id: data.user.id,
-                        email: email,
-                        full_name: fullName,
-                        role: safeRole
-                    }], { onConflict: 'id' });
+            const { error } = await supabaseClient
+                .from('profiles')
+                .update({
+                    full_name: fullName,
+                    section_unit: sectionUnit,
+                    office_phone: officePhone,
+                    mobile_phone: mobilePhone,
+                    email,
+                    avatar_url: avatarUrl
+                })
+                .eq('id', currentProfile.id);
 
-                if (profileError) {
-                    console.error('Ralat simpan profil:', profileError);
-                }
+            if (email && email !== currentSession.user.email) {
+                await supabaseClient.auth.updateUser({ email });
             }
 
             btn.disabled = false;
-            btn.innerText = 'Daftar Pengguna';
-            msgEl.className = 'text-xs font-semibold px-3.5 py-2.5 rounded-xl bg-emerald-50 text-emerald-700';
-            msgEl.innerText = `Pengguna ${fullName} berjaya didaftarkan sebagai ${safeRole.toUpperCase()}.`;
-            msgEl.classList.remove('hidden');
+            btn.innerText = 'Simpan Profil';
 
-            document.getElementById('registerUserForm').reset();
-            loadRegisteredUsers();
+            if (error) {
+                msgEl.className = 'text-xs font-semibold px-3.5 py-2.5 rounded-xl bg-rose-50 text-rose-600';
+                msgEl.innerText = 'Gagal menyimpan profil: ' + error.message;
+                msgEl.classList.remove('hidden');
+            } else {
+                await fetchUserProfile(currentSession.user);
+                msgEl.className = 'text-xs font-semibold px-3.5 py-2.5 rounded-xl bg-emerald-50 text-emerald-700';
+                msgEl.innerText = 'Profil anda berjaya dikemas kini!';
+                msgEl.classList.remove('hidden');
+            }
         });
 
-        async function loadRegisteredUsers() {
-            const tbody = document.getElementById('usersListBody');
+        // --- PENGURUSAN USER (KHUSUS SUPER USER) ---
+        function openManageUsersModal() {
+            if (!isSuperUser()) {
+                alert('Akses Pengurusan User hanya untuk Super User sahaja.');
+                return;
+            }
+            document.getElementById('manageUsersModal').classList.remove('hidden');
+            loadUsersManagement();
+        }
+
+        function closeManageUsersModal() {
+            document.getElementById('manageUsersModal').classList.add('hidden');
+        }
+
+        async function loadUsersManagement() {
+            const tbody = document.getElementById('usersManagementBody');
             const { data, error } = await supabaseClient
                 .from('profiles')
                 .select('*')
-                .order('created_at', { ascending: true });
+                .order('created_at', { ascending: false });
 
             if (error) {
-                tbody.innerHTML = '<tr><td colspan="3" class="py-4 text-center text-rose-500">Gagal memuatkan senarai pengguna.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-rose-500">Gagal memuatkan senarai pengguna.</td></tr>';
                 return;
             }
 
             if (!data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" class="py-4 text-center text-slate-400">Tiada pengguna berdaftar.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-slate-400">Tiada rekod pengguna.</td></tr>';
                 return;
             }
 
             tbody.innerHTML = '';
             data.forEach(u => {
-                // Super User tidak boleh diubah atau di-overwrite peranannya
-                if (u.role === 'super_user') {
+                const isProtectedSuper = u.role === 'super_user';
+                const statusBadge = u.account_status === 'active'
+                    ? '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600">AKTIF</span>'
+                    : '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-50 text-amber-600">PENDING</span>';
+
+                if (isProtectedSuper) {
                     tbody.innerHTML += `
-                        <tr>
-                            <td class="py-2.5 px-2">
-                                <div class="font-bold text-slate-800">${u.full_name}</div>
-                                <div class="text-[11px] text-slate-400">${u.email}</div>
+                        <tr class="bg-indigo-50/30">
+                            <td class="py-3 px-2">
+                                <div class="flex items-center space-x-2.5">
+                                    <div class="w-8 h-8 rounded-xl bg-indigo-100 text-[#6259ca] flex items-center justify-center font-bold overflow-hidden shrink-0">
+                                        ${u.avatar_url ? `<img src="${u.avatar_url}" class="w-full h-full object-cover">` : (u.full_name || 'S').charAt(0)}
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-slate-800">${u.full_name || '-'}</div>
+                                        <div class="text-[11px] text-slate-400">${u.email}</div>
+                                        <div class="text-[10px] text-slate-400">Pejabat: ${u.office_phone || '-'} • HP: ${u.mobile_phone || '-'}</div>
+                                    </div>
+                                </div>
                             </td>
-                            <td class="py-2.5 px-2">
-                                <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-indigo-100 text-[#6259ca]">SUPER USER</span>
-                            </td>
-                            <td class="py-2.5 px-2 text-right text-[11px] font-semibold text-slate-400">
-                                <i class="fa-solid fa-lock mr-1"></i> Dilindungi
-                            </td>
+                            <td class="py-3 px-2 font-semibold text-slate-600">${u.section_unit || '-'}</td>
+                            <td class="py-3 px-2">${statusBadge}</td>
+                            <td class="py-3 px-2"><span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-indigo-100 text-[#6259ca]">SUPER USER</span></td>
+                            <td class="py-3 px-2 text-right text-[11px] font-semibold text-slate-400"><i class="fa-solid fa-lock mr-1"></i> Dilindungi</td>
                         </tr>
                     `;
                 } else {
                     tbody.innerHTML += `
                         <tr>
-                            <td class="py-2.5 px-2">
-                                <div class="font-bold text-slate-800">${u.full_name}</div>
-                                <div class="text-[11px] text-slate-400">${u.email}</div>
+                            <td class="py-3 px-2">
+                                <div class="flex items-center space-x-2.5">
+                                    <div class="w-8 h-8 rounded-xl bg-[#f4f3ff] text-[#6259ca] flex items-center justify-center font-bold overflow-hidden shrink-0">
+                                        ${u.avatar_url ? `<img src="${u.avatar_url}" class="w-full h-full object-cover">` : (u.full_name || 'U').charAt(0)}
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-slate-800">${u.full_name || '-'}</div>
+                                        <div class="text-[11px] text-slate-400">${u.email}</div>
+                                        <div class="text-[10px] text-slate-400">Pejabat: ${u.office_phone || '-'} • HP: ${u.mobile_phone || '-'}</div>
+                                    </div>
+                                </div>
                             </td>
-                            <td class="py-2.5 px-2">
-                                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${u.role === 'admin' ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-600'}">${u.role.toUpperCase()}</span>
-                            </td>
-                            <td class="py-2.5 px-2 text-right">
-                                <select onchange="changeUserRole('${u.id}', '${u.role}', this.value)" class="px-2 py-1 border border-slate-200 rounded-lg text-[11px] font-semibold bg-white">
-                                    <option value="user" ${u.role === 'user' ? 'selected' : ''}>User</option>
+                            <td class="py-3 px-2 font-semibold text-slate-600">${u.section_unit || '-'}</td>
+                            <td class="py-3 px-2">${statusBadge}</td>
+                            <td class="py-3 px-2">
+                                <select onchange="updateUserRole('${u.id}', this.value)" class="px-2 py-1 border border-slate-200 rounded-lg text-[11px] font-semibold bg-white">
+                                    <option value="user" ${u.role === 'user' ? 'selected' : ''}>User Berdaftar</option>
                                     <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
                                 </select>
+                            </td>
+                            <td class="py-3 px-2 text-right space-x-1">
+                                <button type="button" onclick="toggleUserActive('${u.id}', '${u.account_status}')" class="px-2.5 py-1 rounded-lg ${u.account_status === 'active' ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'} text-[10px] font-bold transition">
+                                    ${u.account_status === 'active' ? 'Nyahaktif' : 'Aktifkan'}
+                                </button>
+                                <button type="button" onclick="deleteManagedUser('${u.id}')" title="Padam User" class="px-2.5 py-1 rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-700 text-[10px] font-bold transition">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
                             </td>
                         </tr>
                     `;
@@ -865,54 +1230,118 @@
             });
         }
 
-        async function changeUserRole(targetUserId, oldRole, newRole) {
-            if (!isSuperUser()) {
-                alert('Hanya Super User dibenarkan mengubah peranan pengguna.');
-                return;
-            }
-            if (oldRole === 'super_user' || newRole === 'super_user') {
-                alert('Peranan Super User tidak boleh diubah atau di-overwrite.');
-                loadRegisteredUsers();
-                return;
-            }
+        async function toggleUserActive(userId, currentStatus) {
+            if (!isSuperUser()) return;
+            const nextStatus = currentStatus === 'active' ? 'pending' : 'active';
+            const { error } = await supabaseClient
+                .from('profiles')
+                .update({ account_status: nextStatus })
+                .eq('id', userId)
+                .neq('role', 'super_user');
+
+            if (error) alert('Gagal kemas kini status user: ' + error.message);
+            else loadUsersManagement();
+        }
+
+        async function updateUserRole(userId, newRole) {
+            if (!isSuperUser()) return;
+            if (!['user', 'admin'].includes(newRole)) return;
 
             const { error } = await supabaseClient
                 .from('profiles')
-                .update({ role: newRole })
-                .eq('id', targetUserId)
+                .update({ role: newRole, account_status: 'active' })
+                .eq('id', userId)
                 .neq('role', 'super_user');
 
-            if (error) {
-                alert('Gagal kemas kini peranan: ' + error.message);
-            } else {
-                loadRegisteredUsers();
-            }
+            if (error) alert('Gagal ubah peranan user: ' + error.message);
+            else loadUsersManagement();
         }
 
-        // --- TINDAKAN TEMPAHAN (ADMIN & SUPER USER SAHAJA) ---
-        async function updateBookingStatus(id, newStatus) {
-            if (!canManageBookings()) {
-                alert('Hanya Admin atau Super User boleh meluluskan atau menolak tempahan.');
-                return;
-            }
+        async function deleteManagedUser(userId) {
+            if (!isSuperUser()) return;
+            if (!confirm('Padam akaun pengguna ini daripada sistem?')) return;
 
+            const { error } = await supabaseClient
+                .from('profiles')
+                .delete()
+                .eq('id', userId)
+                .neq('role', 'super_user');
+
+            if (error) alert('Gagal padam pengguna: ' + error.message);
+            else loadUsersManagement();
+        }
+
+        // --- TINDAKAN TEMPAHAN (ADMIN & SUPER USER) ---
+        function openEditBookingModal(id) {
+            if (!canManageBookings()) return;
+            const booking = currentBookingsCache.find(item => item.id === id);
+            if (!booking) return;
+
+            document.getElementById('editBookingId').value = booking.id;
+            document.getElementById('editBookingFacility').value = booking.fasiliti || 'Bilik Mesyuarat Utama';
+            document.getElementById('editBookingDate').value = booking.tarikh || '';
+            document.getElementById('editBookingStart').value = booking.masa_mula || '';
+            document.getElementById('editBookingEnd').value = booking.masa_tamat || '';
+            document.getElementById('editBookingTitle').value = booking.tajuk || '';
+            document.getElementById('editBookingApplicant').value = booking.nama_pemohon || '';
+            document.getElementById('editBookingUnit').value = booking.unit || '';
+
+            document.getElementById('editBookingModal').classList.remove('hidden');
+        }
+
+        function closeEditBookingModal() {
+            document.getElementById('editBookingModal').classList.add('hidden');
+            document.getElementById('editBookingForm').reset();
+        }
+
+        document.getElementById('editBookingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!canManageBookings()) return;
+
+            const btn = document.getElementById('btnSaveBookingEdit');
+            btn.disabled = true;
+            btn.innerText = 'Menyimpan...';
+
+            const id = document.getElementById('editBookingId').value;
+            const payload = {
+                fasiliti: document.getElementById('editBookingFacility').value,
+                tarikh: document.getElementById('editBookingDate').value,
+                masa_mula: document.getElementById('editBookingStart').value,
+                masa_tamat: document.getElementById('editBookingEnd').value,
+                tajuk: document.getElementById('editBookingTitle').value,
+                nama_pemohon: document.getElementById('editBookingApplicant').value,
+                unit: document.getElementById('editBookingUnit').value
+            };
+
+            const { error } = await supabaseClient
+                .from('tempahan')
+                .update(payload)
+                .eq('id', id);
+
+            btn.disabled = false;
+            btn.innerText = 'Simpan Perubahan';
+
+            if (error) {
+                alert('Gagal kemas kini tempahan: ' + error.message);
+            } else {
+                closeEditBookingModal();
+                loadBookings();
+            }
+        });
+
+        async function updateBookingStatus(id, newStatus) {
+            if (!canManageBookings()) return;
             const { error } = await supabaseClient
                 .from('tempahan')
                 .update({ status: newStatus })
                 .eq('id', id);
 
-            if (error) {
-                alert('Gagal kemas kini status: ' + error.message);
-            } else {
-                loadBookings();
-            }
+            if (error) alert('Gagal kemas kini status: ' + error.message);
+            else loadBookings();
         }
 
         async function deleteBooking(id) {
-            if (!canManageBookings()) {
-                alert('Hanya Admin atau Super User boleh memadam tempahan.');
-                return;
-            }
+            if (!canManageBookings()) return;
             if (!confirm('Padam rekod tempahan ini secara kekal?')) return;
 
             const { error } = await supabaseClient
@@ -920,11 +1349,8 @@
                 .delete()
                 .eq('id', id);
 
-            if (error) {
-                alert('Gagal padam rekod: ' + error.message);
-            } else {
-                loadBookings();
-            }
+            if (error) alert('Gagal padam rekod: ' + error.message);
+            else loadBookings();
         }
 
         // --- MINI KALENDAR ---
@@ -1011,17 +1437,20 @@
                 const statusText = b.status || 'Diluluskan';
                 let badgeColor = 'bg-emerald-50 text-emerald-600';
                 if (statusText === 'Menunggu Kelulusan') badgeColor = 'bg-amber-50 text-amber-600';
-                if (statusText === 'Ditolak') badgeColor = 'bg-rose-50 text-rose-600';
+                if (statusText === 'Dibatalkan' || statusText === 'Ditolak') badgeColor = 'bg-rose-50 text-rose-600';
 
                 const staffControls = allowActions ? `
-                    <div class="mt-2 flex items-center justify-end space-x-1.5">
+                    <div class="mt-2 flex flex-wrap items-center justify-end gap-1">
+                        <button type="button" onclick="openEditBookingModal(${b.id})" title="Ubah Detail / Pinda Tarikh" class="px-2 py-1 rounded-lg bg-indigo-100 hover:bg-indigo-200 text-indigo-700 text-[10px] font-bold transition">
+                            Pinda / Ubah
+                        </button>
                         <button type="button" onclick="updateBookingStatus(${b.id}, 'Diluluskan')" title="Luluskan" class="px-2 py-1 rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-700 text-[10px] font-bold transition">
                             Lulus
                         </button>
-                        <button type="button" onclick="updateBookingStatus(${b.id}, 'Ditolak')" title="Tolak" class="px-2 py-1 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-700 text-[10px] font-bold transition">
-                            Tolak
+                        <button type="button" onclick="updateBookingStatus(${b.id}, 'Dibatalkan')" title="Batal Permohonan" class="px-2 py-1 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-700 text-[10px] font-bold transition">
+                            Batal
                         </button>
-                        <button type="button" onclick="deleteBooking(${b.id})" title="Padam" class="px-2 py-1 rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-700 text-[10px] font-bold transition">
+                        <button type="button" onclick="deleteBooking(${b.id})" title="Padam Rekod" class="px-2 py-1 rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-700 text-[10px] font-bold transition">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </div>
