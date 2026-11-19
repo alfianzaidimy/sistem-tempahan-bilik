@@ -873,19 +873,30 @@
                 return;
             }
 
-            const { data, error } = await supabaseClient
+            // Semak dahulu ikut id, dan jika tiada, semak ikut emel supaya rekod super_user sedia ada tidak tertimpa
+            let { data, error } = await supabaseClient
                 .from('profiles')
                 .select('*')
                 .eq('id', user.id)
                 .maybeSingle();
+
+            if (!data && user.email) {
+                const byEmail = await supabaseClient
+                    .from('profiles')
+                    .select('*')
+                    .ilike('email', user.email)
+                    .maybeSingle();
+                data = byEmail.data;
+                error = byEmail.error;
+            }
 
             if (!error && data) {
                 currentProfile = data;
             } else {
                 const defaultProfile = {
                     id: user.id,
-                    email: user.email,
-                    full_name: user.user_metadata?.full_name || user.email.split('@')[0],
+                    email: (user.email || '').toLowerCase(),
+                    full_name: user.user_metadata?.full_name || (user.email || 'Pengguna').split('@')[0],
                     office_phone: user.user_metadata?.office_phone || '',
                     section_unit: user.user_metadata?.section_unit || '',
                     mobile_phone: user.user_metadata?.mobile_phone || '',
@@ -893,7 +904,7 @@
                     role: 'user',
                     account_status: 'pending'
                 };
-                await supabaseClient.from('profiles').upsert([defaultProfile], { onConflict: 'id' });
+                await supabaseClient.from('profiles').insert([defaultProfile]);
                 currentProfile = defaultProfile;
             }
 
@@ -954,7 +965,7 @@
             btn.disabled = true;
             btn.innerText = 'Menyemak...';
 
-            const email = document.getElementById('loginEmail').value.trim();
+            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
             const password = document.getElementById('loginPassword').value;
 
             const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
@@ -972,22 +983,49 @@
             }
         });
 
+        // Borang Daftar Akaun Baru dengan Semakan Emel Pendua & Perlindungan Super User
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btnRegisterSubmit');
             const msgEl = document.getElementById('registerMsg');
             msgEl.classList.add('hidden');
             btn.disabled = true;
-            btn.innerText = 'Menghantar...';
+            btn.innerText = 'Menyemak emel...';
 
             const fullName = document.getElementById('regFullName').value.trim();
             const sectionUnit = document.getElementById('regSectionUnit').value.trim();
             const officePhone = document.getElementById('regOfficePhone').value.trim();
             const mobilePhone = document.getElementById('regMobilePhone').value.trim();
-            const email = document.getElementById('regEmail').value.trim();
+            const email = document.getElementById('regEmail').value.trim().toLowerCase();
             const password = document.getElementById('regPassword').value;
             const avatarFile = document.getElementById('regAvatarFile').files?.[0];
 
+            // 1. Semak sama ada emel sudah wujud dalam jadual profiles
+            const { data: existingProfile, error: checkError } = await supabaseClient
+                .from('profiles')
+                .select('id, email, role, account_status')
+                .ilike('email', email)
+                .maybeSingle();
+
+            if (checkError) {
+                btn.disabled = false;
+                btn.innerText = 'Hantar Pendaftaran';
+                msgEl.className = 'text-xs font-semibold px-3.5 py-2.5 rounded-xl bg-rose-50 text-rose-600';
+                msgEl.innerText = 'Ralat menyemak emel: ' + checkError.message;
+                msgEl.classList.remove('hidden');
+                return;
+            }
+
+            if (existingProfile) {
+                btn.disabled = false;
+                btn.innerText = 'Hantar Pendaftaran';
+                msgEl.className = 'text-xs font-semibold px-3.5 py-2.5 rounded-xl bg-rose-50 text-rose-600';
+                msgEl.innerText = 'Emel ini sudah berdaftar dalam sistem! Sila gunakan tab Log Masuk atau emel lain.';
+                msgEl.classList.remove('hidden');
+                return;
+            }
+
+            btn.innerText = 'Menghantar...';
             let avatarUrl = '';
             if (avatarFile) {
                 avatarUrl = await uploadAvatarFile(avatarFile, 'avatar') || '';
@@ -1017,17 +1055,28 @@
             }
 
             if (data?.user) {
-                await supabaseClient.from('profiles').upsert([{
-                    id: data.user.id,
-                    email,
-                    full_name: fullName,
-                    section_unit: sectionUnit,
-                    office_phone: officePhone,
-                    mobile_phone: mobilePhone,
-                    avatar_url: avatarUrl,
-                    role: 'user',
-                    account_status: 'pending'
-                }], { onConflict: 'id' });
+                const { error: insertError } = await supabaseClient
+                    .from('profiles')
+                    .insert([{
+                        id: data.user.id,
+                        email,
+                        full_name: fullName,
+                        section_unit: sectionUnit,
+                        office_phone: officePhone,
+                        mobile_phone: mobilePhone,
+                        avatar_url: avatarUrl,
+                        role: 'user',
+                        account_status: 'pending'
+                    }]);
+
+                if (insertError) {
+                    btn.disabled = false;
+                    btn.innerText = 'Hantar Pendaftaran';
+                    msgEl.className = 'text-xs font-semibold px-3.5 py-2.5 rounded-xl bg-rose-50 text-rose-600';
+                    msgEl.innerText = 'Emel ini sudah berdaftar dalam sistem!';
+                    msgEl.classList.remove('hidden');
+                    return;
+                }
             }
 
             btn.disabled = false;
@@ -1094,7 +1143,7 @@
             const sectionUnit = document.getElementById('editSectionUnit').value.trim();
             const officePhone = document.getElementById('editOfficePhone').value.trim();
             const mobilePhone = document.getElementById('editMobilePhone').value.trim();
-            const email = document.getElementById('editEmail').value.trim();
+            const email = document.getElementById('editEmail').value.trim().toLowerCase();
             const avatarFile = document.getElementById('editAvatarFile').files?.[0];
 
             let avatarUrl = currentProfile.avatar_url || '';
