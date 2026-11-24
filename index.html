@@ -214,9 +214,16 @@
                 </section>
 
                 <section id="bookingSection" class="xl:col-span-7 bg-white p-5 rounded-3xl border border-slate-100 shadow-xs">
-                    <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center justify-between mb-3">
                         <h3 class="text-base font-extrabold text-slate-800">Mohon Tempahan Bilik</h3>
                         <span class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#f4f3ff] text-[#6259ca]">Borang Rasmi</span>
+                    </div>
+
+                    <div id="bookingAccessNotice" class="mb-3 px-3.5 py-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold flex items-center justify-between gap-2">
+                        <span id="bookingAccessText">Tempahan hanya untuk pengguna berdaftar & aktif. Sila log masuk dahulu.</span>
+                        <button type="button" id="btnBookingNoticeLogin" onclick="openAuthModal('login')" class="px-3 py-1 rounded-lg bg-[#6259ca] hover:bg-[#5249b5] text-white text-[11px] font-bold shrink-0 transition">
+                            Log Masuk
+                        </button>
                     </div>
 
                     <form id="bookingForm" class="space-y-3 text-xs">
@@ -666,6 +673,10 @@
             return currentProfile?.account_status === 'active';
         }
 
+        function canBookFacility() {
+            return Boolean(currentSession && isActiveAccount());
+        }
+
         function isSuperUser() {
             return isActiveAccount() && getRole() === 'super_user';
         }
@@ -728,6 +739,51 @@
 
             const { data } = supabaseClient.storage.from('avatars').getPublicUrl(filePath);
             return data?.publicUrl || null;
+        }
+
+        function syncBookingFormLock() {
+            const allowed = canBookFacility();
+            const fieldIds = ['nama', 'unit', 'emel', 'fasiliti', 'tarikh', 'mula', 'tamat', 'tajuk', 'btnSubmit'];
+
+            fieldIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                el.disabled = !allowed;
+                if (!allowed) {
+                    el.classList.add('opacity-60', 'cursor-not-allowed');
+                } else {
+                    el.classList.remove('opacity-60', 'cursor-not-allowed');
+                }
+            });
+
+            const notice = document.getElementById('bookingAccessNotice');
+            const noticeText = document.getElementById('bookingAccessText');
+            const noticeLoginBtn = document.getElementById('btnBookingNoticeLogin');
+            const submitBtn = document.getElementById('btnSubmit');
+
+            if (allowed) {
+                notice.className = 'mb-3 px-3.5 py-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center justify-between gap-2';
+                noticeText.innerText = 'Akaun aktif disahkan — anda boleh menghantar permohonan tempahan bilik.';
+                noticeLoginBtn.classList.add('hidden');
+                submitBtn.innerText = 'Hantar Permohonan';
+
+                const namaInput = document.getElementById('nama');
+                const emelInput = document.getElementById('emel');
+                const unitInput = document.getElementById('unit');
+                if (namaInput && !namaInput.value && currentProfile?.full_name) namaInput.value = currentProfile.full_name;
+                if (emelInput && !emelInput.value && currentSession?.user?.email) emelInput.value = currentSession.user.email;
+                if (unitInput && !unitInput.value && currentProfile?.section_unit) unitInput.value = currentProfile.section_unit;
+            } else if (!currentSession) {
+                notice.className = 'mb-3 px-3.5 py-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold flex items-center justify-between gap-2';
+                noticeText.innerText = 'Tempahan hanya untuk pengguna berdaftar & aktif. Sila log masuk dahulu.';
+                noticeLoginBtn.classList.remove('hidden');
+                submitBtn.innerText = 'Sila Log Masuk untuk Menempah';
+            } else {
+                notice.className = 'mb-3 px-3.5 py-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center justify-between gap-2';
+                noticeText.innerText = 'Akaun anda masih berstatus PENDING. Tempahan dibuka selepas diaktifkan oleh Super User.';
+                noticeLoginBtn.classList.add('hidden');
+                submitBtn.innerText = 'Menunggu Pengaktifan Akaun';
+            }
         }
 
         function applyRoleUI() {
@@ -839,6 +895,7 @@
                 }
             }
 
+            syncBookingFormLock();
             renderBookingsTable(currentBookingsCache);
         }
 
@@ -1067,6 +1124,9 @@
             await supabaseClient.auth.signOut();
             currentSession = null;
             currentProfile = null;
+            document.getElementById('nama').value = '';
+            document.getElementById('emel').value = '';
+            document.getElementById('unit').value = '';
             applyRoleUI();
         }
 
@@ -1410,12 +1470,17 @@
         }
 
         function setTarikh(dateStr) {
+            if (!canBookFacility()) {
+                alert('Sila log masuk dengan akaun aktif untuk memilih tarikh tempahan.');
+                return;
+            }
             document.getElementById('tarikh').value = dateStr;
             document.getElementById('bookingSection').scrollIntoView({ behavior: 'smooth' });
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
             renderMiniCalendar();
+            syncBookingFormLock();
             const { data: { session } } = await supabaseClient.auth.getSession();
             currentSession = session;
             await fetchUserProfile(session?.user || null);
@@ -1498,32 +1563,40 @@
 
         document.getElementById('bookingForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            if (!canBookFacility()) {
+                alert('Hanya pengguna berdaftar dan berstatus aktif sahaja boleh menghantar tempahan.');
+                if (!currentSession) openAuthModal('login');
+                return;
+            }
+
             const btn = document.getElementById('btnSubmit');
             btn.innerText = 'Menghantar...';
             btn.disabled = true;
 
             const formData = {
-                nama_pemohon: document.getElementById('nama').value,
-                unit: document.getElementById('unit').value,
-                emel: document.getElementById('emel').value,
+                nama_pemohon: document.getElementById('nama').value.trim(),
+                unit: document.getElementById('unit').value.trim(),
+                emel: document.getElementById('emel').value.trim().toLowerCase(),
                 fasiliti: document.getElementById('fasiliti').value,
                 tarikh: document.getElementById('tarikh').value,
                 masa_mula: document.getElementById('mula').value,
                 masa_tamat: document.getElementById('tamat').value,
-                tajuk: document.getElementById('tajuk').value,
+                tajuk: document.getElementById('tajuk').value.trim(),
                 status: 'Menunggu Kelulusan'
             };
 
             const { error } = await supabaseClient.from('tempahan').insert([formData]);
 
-            btn.innerText = 'Hantar Permohonan';
             btn.disabled = false;
+            syncBookingFormLock();
 
             if (error) {
                 alert('Gagal hantar: ' + error.message);
             } else {
                 alert('Permohonan berjaya dihantar!');
                 document.getElementById('bookingForm').reset();
+                syncBookingFormLock();
                 loadBookings();
             }
         });
