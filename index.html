@@ -4,13 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistem Tempahan Fasiliti | MinDef</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts: Plus Jakarta Sans -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body {
@@ -24,13 +20,11 @@
 </head>
 <body class="min-h-screen text-slate-700 antialiased p-0 sm:p-4 lg:p-6 flex items-center justify-center">
 
-    <!-- Main App Container -->
     <div class="w-full max-w-[1440px] min-h-screen sm:min-h-[88vh] bg-white sm:rounded-[32px] shadow-2xl shadow-indigo-950/15 flex overflow-hidden relative">
 
         <!-- 1. LEFT SIDEBAR -->
         <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-slate-100 flex flex-col justify-between p-6 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out lg:static lg:flex-shrink-0">
             <div>
-                <!-- Brand / Logo MinDef -->
                 <div class="flex items-center justify-between mb-9">
                     <div class="flex items-center">
                         <img src="logo.png" alt="Logo MINDEF" class="h-9 w-auto object-contain">
@@ -40,7 +34,6 @@
                     </button>
                 </div>
 
-                <!-- Menu Navigasi -->
                 <nav class="space-y-1.5 text-sm font-semibold">
                     <a href="#topSection" onclick="closeMobileMenu()" class="flex items-center space-x-3.5 px-4 py-3 rounded-2xl bg-[#6259ca] text-white shadow-lg shadow-[#6259ca]/25 transition">
                         <i class="fa-solid fa-house w-4 text-center"></i>
@@ -59,19 +52,16 @@
                         <span>Rekod Tempahan</span>
                     </a>
 
-                    <!-- Menu Edit Profil Sendiri (Untuk User Aktif) -->
                     <button type="button" id="menuEditProfile" onclick="openEditProfileModal()" class="hidden w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-500 hover:text-[#6259ca] hover:bg-slate-50 transition text-left">
                         <i class="fa-solid fa-id-card w-4 text-center"></i>
                         <span>Edit Profil Saya</span>
                     </button>
 
-                    <!-- Menu Khusus Super User: Urus & Aktifkan User -->
                     <button type="button" id="menuManageUsers" onclick="openManageUsersModal()" class="hidden w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-indigo-700 bg-[#f4f3ff] hover:bg-indigo-100 transition text-left">
                         <i class="fa-solid fa-users-gear w-4 text-center"></i>
                         <span>Pengurusan User</span>
                     </button>
 
-                    <!-- Menu Log Masuk / Daftar -->
                     <button type="button" id="sidebarAuthBtn" onclick="openAuthModal('login')" class="w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-400 hover:text-[#6259ca] hover:bg-slate-50 transition text-left">
                         <i class="fa-solid fa-user-shield w-4 text-center"></i>
                         <span id="sidebarAuthLabel">Log Masuk / Daftar</span>
@@ -79,7 +69,6 @@
                 </nav>
             </div>
 
-            <!-- Kad Bawah Sidebar -->
             <div class="mt-8 bg-[#f4f3ff] rounded-3xl p-5 text-center relative overflow-hidden">
                 <div class="w-12 h-12 mx-auto mb-3 rounded-2xl bg-gradient-to-tr from-[#6259ca] to-indigo-400 text-white flex items-center justify-center text-xl shadow-md">
                     <i class="fa-solid fa-shield-halved"></i>
@@ -95,8 +84,6 @@
 
         <!-- 2. MAIN CENTER CONTENT -->
         <main id="topSection" class="flex-1 bg-[#fafbfe] p-5 sm:p-8 overflow-y-auto">
-
-            <!-- Header Bar Tengah -->
             <header class="flex flex-wrap items-center justify-between gap-4 mb-7">
                 <div class="flex items-center space-x-3">
                     <button type="button" onclick="toggleSidebar()" class="lg:hidden p-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-[#6259ca]">
@@ -108,7 +95,6 @@
                     </div>
                 </div>
 
-                <!-- Kotak Carian, Butang Daftar / Log Masuk & Refresh -->
                 <div class="flex flex-wrap items-center gap-2">
                     <div class="relative hidden sm:block">
                         <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Cari rekod..." class="pl-4 pr-10 py-2.5 bg-white border border-slate-100 rounded-2xl text-xs font-medium text-slate-600 focus:outline-none focus:ring-2 focus:ring-[#6259ca]/30 w-36 md:w-44 shadow-xs">
@@ -136,7 +122,6 @@
                 </div>
             </header>
 
-            <!-- Banner Status Sesi Aktif -->
             <div id="roleStatusBanner" class="hidden mb-6 p-4 rounded-2xl bg-[#f4f3ff] border border-indigo-100 flex flex-wrap items-center justify-between gap-3">
                 <div class="flex items-center space-x-3 text-slate-800 text-xs sm:text-sm font-bold">
                     <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -158,7 +143,6 @@
                 </div>
             </div>
 
-            <!-- Seksyen Kad Pilihan Bilik -->
             <section class="mb-8">
                 <div class="flex items-center justify-between mb-3">
                     <h2 class="text-lg font-extrabold text-slate-800">Fasiliti Bilik</h2>
@@ -213,16 +197,12 @@
                 </div>
             </section>
 
-            <!-- Seksyen Tengah Bawah: Kalendar Tarikh (Kiri) & Borang Tempahan (Kanan) -->
             <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 mb-8">
-
-                <!-- Kalendar Tarikh Tersedia -->
                 <section id="calendarSection" class="xl:col-span-5 bg-white p-5 rounded-3xl border border-slate-100 shadow-xs">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-base font-extrabold text-slate-800">Available Dates</h3>
                         <span id="calendarMonthLabel" class="px-3 py-1.5 rounded-xl bg-[#f4f3ff] text-[#6259ca] text-xs font-bold">November 2026</span>
                     </div>
-
                     <div class="grid grid-cols-7 text-center text-[11px] font-bold text-slate-400 mb-2">
                         <span>Isn</span><span>Sel</span><span>Rab</span><span>Kha</span><span>Jum</span><span>Sab</span><span>Aha</span>
                     </div>
@@ -233,7 +213,6 @@
                     </div>
                 </section>
 
-                <!-- Borang Permohonan Tempahan -->
                 <section id="bookingSection" class="xl:col-span-7 bg-white p-5 rounded-3xl border border-slate-100 shadow-xs">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-base font-extrabold text-slate-800">Mohon Tempahan Bilik</h3>
@@ -294,7 +273,6 @@
                 </section>
             </div>
 
-            <!-- Jadual Tempahan Real-Time (Supabase Live) -->
             <section id="tableSection" class="bg-white p-5 sm:p-6 rounded-3xl border border-slate-100 shadow-xs">
                 <div class="flex items-center justify-between mb-4">
                     <div>
@@ -327,7 +305,6 @@
         <!-- 3. RIGHT PROFILE & QUICK SUMMARY RAIL -->
         <aside class="hidden xl:flex xl:flex-col xl:w-80 bg-white border-l border-slate-100 p-6 justify-between flex-shrink-0">
             <div class="space-y-7">
-                <!-- Profil Pengguna / Pelawat -->
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-3.5">
                         <div id="profileAvatarBox" class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-600 flex items-center justify-center font-extrabold text-lg shadow-xs overflow-hidden">
@@ -344,7 +321,6 @@
                     </button>
                 </div>
 
-                <!-- Kemudahan Bilik -->
                 <div>
                     <h4 class="text-sm font-extrabold text-slate-800 mb-3">Kemudahan Disediakan</h4>
                     <div class="grid grid-cols-3 gap-2.5">
@@ -356,7 +332,6 @@
                     </div>
                 </div>
 
-                <!-- Senarai Ringkas Bilik -->
                 <div>
                     <h4 class="text-sm font-extrabold text-slate-800 mb-3">Status Fasiliti</h4>
                     <div class="space-y-3">
@@ -385,7 +360,6 @@
                 </div>
             </div>
 
-            <!-- Kad Statistik Ungu di Bawah Kanan -->
             <div class="mt-6 rounded-3xl bg-gradient-to-br from-[#6259ca] via-[#5349b8] to-indigo-800 p-5 text-white shadow-xl shadow-[#6259ca]/25 relative overflow-hidden">
                 <div class="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-white/10"></div>
                 <div class="flex items-center justify-between mb-3">
@@ -402,7 +376,6 @@
                 </div>
             </div>
         </aside>
-
     </div>
 
     <!-- MODAL LOG MASUK & PENDAFTARAN USER BARU -->
@@ -418,17 +391,15 @@
                 </button>
             </div>
 
-            <!-- Tab Log Masuk / Daftar Baru -->
             <div class="grid grid-cols-2 gap-2 p-1 bg-[#f4f3ff] rounded-2xl mb-5 text-xs font-bold">
                 <button type="button" id="tabLogin" onclick="switchAuthTab('login')" class="py-2 rounded-xl bg-[#6259ca] text-white transition">Log Masuk</button>
                 <button type="button" id="tabRegister" onclick="switchAuthTab('register')" class="py-2 rounded-xl text-[#6259ca] transition">Daftar Akaun Baru</button>
             </div>
 
-            <!-- Borang Log Masuk -->
             <form id="loginForm" class="space-y-4 text-xs sm:text-sm">
                 <div>
-                    <label class="block font-bold text-slate-600 mb-1">Emel Rasmi</label>
-                    <input type="email" id="loginEmail" required class="w-full px-4 py-2.5 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]" placeholder="nama@mindef.gov.my">
+                    <label class="block font-bold text-slate-600 mb-1">Emel</label>
+                    <input type="email" id="loginEmail" required class="w-full px-4 py-2.5 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]" placeholder="alfianzaidi@gmail.com">
                 </div>
                 <div>
                     <label class="block font-bold text-slate-600 mb-1">Kata Laluan</label>
@@ -442,7 +413,6 @@
                 </div>
             </form>
 
-            <!-- Borang Daftar Akaun Baru -->
             <form id="registerForm" class="hidden space-y-3 text-xs">
                 <div class="flex items-center space-x-4">
                     <div class="w-16 h-16 rounded-2xl bg-[#f4f3ff] border border-indigo-100 flex items-center justify-center overflow-hidden shrink-0">
@@ -479,7 +449,7 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                        <label class="block font-bold text-slate-600 mb-1">Emel Rasmi</label>
+                        <label class="block font-bold text-slate-600 mb-1">Emel</label>
                         <input type="email" id="regEmail" required class="w-full px-3.5 py-2 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]" placeholder="nama@mindef.gov.my">
                     </div>
                     <div>
@@ -498,7 +468,7 @@
         </div>
     </div>
 
-    <!-- MODAL EDIT PROFIL SENDIRI (SEMUA USER AKTIF) -->
+    <!-- MODAL EDIT PROFIL SENDIRI -->
     <div id="editProfileModal" class="fixed inset-0 z-50 hidden bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-white w-full max-w-lg rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-100 my-8">
             <div class="flex items-center justify-between mb-5">
@@ -597,7 +567,7 @@
         </div>
     </div>
 
-    <!-- MODAL UBAH DETAIL MESYUARAT / PINDA TARIKH (ADMIN & SUPER USER) -->
+    <!-- MODAL UBAH DETAIL MESYUARAT / PINDA TARIKH -->
     <div id="editBookingModal" class="fixed inset-0 z-50 hidden bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-white w-full max-w-lg rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-100 my-8">
             <div class="flex items-center justify-between mb-5">
@@ -661,11 +631,10 @@
         </div>
     </div>
 
-    <!-- Skrip Supabase & Logik Sistem -->
     <script>
         const SUPABASE_URL = 'https://sawdjsujxtmyiicosxcw.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_fCnZl3czaDMOZkGmCcWYsQ_LsPvIGBA';
-        const SUPER_USER_EMAIL = 'alfianz.yusof@mod.gov.my';
+        const SUPER_USER_EMAIL = 'alfianzaidi@gmail.com';
 
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -686,9 +655,9 @@
         }
 
         function getRole() {
-            if (!currentSession || !currentProfile) return 'guest';
+            if (!currentSession) return 'guest';
             if (isSuperUserEmail(currentSession.user?.email)) return 'super_user';
-            return currentProfile.role || 'user';
+            return currentProfile?.role || 'user';
         }
 
         function isActiveAccount() {
@@ -1202,13 +1171,15 @@
 
         async function loadUsersManagement() {
             const tbody = document.getElementById('usersManagementBody');
+            tbody.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-slate-400">Memuatkan data pengguna...</td></tr>';
+
             const { data, error } = await supabaseClient
                 .from('profiles')
                 .select('*')
                 .order('created_at', { ascending: false });
 
             if (error) {
-                tbody.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-rose-500">Gagal memuatkan senarai pengguna.</td></tr>';
+                tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-rose-500">Gagal memuatkan senarai pengguna: ${error.message}</td></tr>`;
                 return;
             }
 
@@ -1230,7 +1201,7 @@
                             <td class="py-3 px-2">
                                 <div class="flex items-center space-x-2.5">
                                     <div class="w-8 h-8 rounded-xl bg-indigo-100 text-[#6259ca] flex items-center justify-center font-bold overflow-hidden shrink-0">
-                                        ${u.avatar_url ? `<img src="${u.avatar_url}" class="w-full h-full object-cover">` : (u.full_name || 'S').charAt(0)}
+                                        ${u.avatar_url ? `<img src="${u.avatar_url}" class="w-full h-full object-cover">` : (u.full_name || 'A').charAt(0)}
                                     </div>
                                     <div>
                                         <div class="font-bold text-slate-800">${u.full_name || 'Alfian Zaidi'}</div>
