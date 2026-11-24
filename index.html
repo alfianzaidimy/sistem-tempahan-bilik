@@ -665,10 +665,10 @@
     <script>
         const SUPABASE_URL = 'https://sawdjsujxtmyiicosxcw.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_fCnZl3czaDMOZkGmCcWYsQ_LsPvIGBA';
+        const SUPER_USER_EMAIL = 'alfianz.yusof@mod.gov.my';
 
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Client berasingan untuk proses pendaftaran supaya sesi pengguna aktif tidak diganti secara automatik
         const supabaseSignupClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
             auth: {
                 persistSession: false,
@@ -681,13 +681,20 @@
         let currentProfile = null;
         let currentBookingsCache = [];
 
+        function isSuperUserEmail(email) {
+            return (email || '').trim().toLowerCase() === SUPER_USER_EMAIL;
+        }
+
         function getRole() {
             if (!currentSession || !currentProfile) return 'guest';
+            if (isSuperUserEmail(currentSession.user?.email)) return 'super_user';
             return currentProfile.role || 'user';
         }
 
         function isActiveAccount() {
-            return !!currentSession && currentProfile?.account_status === 'active';
+            if (!currentSession) return false;
+            if (isSuperUserEmail(currentSession.user?.email)) return true;
+            return currentProfile?.account_status === 'active';
         }
 
         function isSuperUser() {
@@ -754,7 +761,6 @@
             return data?.publicUrl || null;
         }
 
-        // --- KEMAS KINI UI MENGIKUT STATUS & PERANAN ---
         function applyRoleUI() {
             const greetingTitle = document.getElementById('greetingTitle');
             const greetingSubtitle = document.getElementById('greetingSubtitle');
@@ -801,9 +807,10 @@
                 btnBannerManageUsers.classList.add('hidden');
                 btnBannerEditProfile.classList.add('hidden');
             } else {
-                const name = currentProfile?.full_name || currentSession.user.email;
-                const role = currentProfile?.role || 'user';
-                const status = currentProfile?.account_status || 'pending';
+                const superByEmail = isSuperUserEmail(currentSession.user?.email);
+                const name = currentProfile?.full_name || (superByEmail ? 'Alfian Zaidi' : currentSession.user.email);
+                const role = superByEmail ? 'super_user' : (currentProfile?.role || 'user');
+                const status = superByEmail ? 'active' : (currentProfile?.account_status || 'pending');
 
                 const roleLabelMap = {
                     super_user: 'Super User',
@@ -824,7 +831,7 @@
                     profileAvatarImg.classList.remove('hidden');
                     profileInitial.classList.add('hidden');
                 } else {
-                    profileInitial.innerText = name.trim().charAt(0).toUpperCase() || 'U';
+                    profileInitial.innerText = name.trim().charAt(0).toUpperCase() || 'A';
                     profileInitial.classList.remove('hidden');
                     profileAvatarImg.classList.add('hidden');
                 }
@@ -844,7 +851,7 @@
                     else alert('Akaun anda masih menunggu pengaktifan oleh Super User.');
                 };
 
-                if (isActiveAccount()) {
+                if (status === 'active') {
                     menuEditProfile.classList.remove('hidden');
                     btnBannerEditProfile.classList.remove('hidden');
                 } else {
@@ -852,7 +859,7 @@
                     btnBannerEditProfile.classList.add('hidden');
                 }
 
-                if (isSuperUser()) {
+                if (role === 'super_user' && status === 'active') {
                     menuManageUsers.classList.remove('hidden');
                     btnTopManageUsers.classList.remove('hidden');
                     btnBannerManageUsers.classList.remove('hidden');
@@ -873,7 +880,8 @@
                 return;
             }
 
-            // Semak dahulu ikut id, dan jika tiada, semak ikut emel supaya rekod super_user sedia ada tidak tertimpa
+            const superByEmail = isSuperUserEmail(user.email);
+
             let { data, error } = await supabaseClient
                 .from('profiles')
                 .select('*')
@@ -891,27 +899,26 @@
             }
 
             if (!error && data) {
-                currentProfile = data;
+                currentProfile = superByEmail
+                    ? { ...data, full_name: data.full_name || 'Alfian Zaidi', role: 'super_user', account_status: 'active' }
+                    : data;
             } else {
-                const defaultProfile = {
+                currentProfile = {
                     id: user.id,
                     email: (user.email || '').toLowerCase(),
-                    full_name: user.user_metadata?.full_name || (user.email || 'Pengguna').split('@')[0],
+                    full_name: superByEmail ? 'Alfian Zaidi' : (user.user_metadata?.full_name || (user.email || 'Pengguna').split('@')[0]),
                     office_phone: user.user_metadata?.office_phone || '',
                     section_unit: user.user_metadata?.section_unit || '',
                     mobile_phone: user.user_metadata?.mobile_phone || '',
                     avatar_url: user.user_metadata?.avatar_url || '',
-                    role: 'user',
-                    account_status: 'pending'
+                    role: superByEmail ? 'super_user' : 'user',
+                    account_status: superByEmail ? 'active' : 'pending'
                 };
-                await supabaseClient.from('profiles').insert([defaultProfile]);
-                currentProfile = defaultProfile;
             }
 
             applyRoleUI();
         }
 
-        // --- MODAL LOG MASUK & PENDAFTARAN ---
         function openAuthModal(defaultTab = 'login') {
             document.getElementById('authModal').classList.remove('hidden');
             switchAuthTab(defaultTab);
@@ -983,7 +990,6 @@
             }
         });
 
-        // Borang Daftar Akaun Baru dengan Semakan Emel Pendua & Perlindungan Super User
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btnRegisterSubmit');
@@ -1000,7 +1006,6 @@
             const password = document.getElementById('regPassword').value;
             const avatarFile = document.getElementById('regAvatarFile').files?.[0];
 
-            // 1. Semak sama ada emel sudah wujud dalam jadual profiles
             const { data: existingProfile, error: checkError } = await supabaseClient
                 .from('profiles')
                 .select('id, email, role, account_status')
@@ -1096,7 +1101,6 @@
             applyRoleUI();
         }
 
-        // --- EDIT PROFIL SENDIRI (SEMUA USER AKTIF) ---
         function openEditProfileModal() {
             if (!isActiveAccount() || !currentProfile) {
                 alert('Hanya pengguna yang telah diaktifkan boleh mengedit profil.');
@@ -1183,7 +1187,6 @@
             }
         });
 
-        // --- PENGURUSAN USER (KHUSUS SUPER USER) ---
         function openManageUsersModal() {
             if (!isSuperUser()) {
                 alert('Akses Pengurusan User hanya untuk Super User sahaja.');
@@ -1216,7 +1219,7 @@
 
             tbody.innerHTML = '';
             data.forEach(u => {
-                const isProtectedSuper = u.role === 'super_user';
+                const isProtectedSuper = u.role === 'super_user' || isSuperUserEmail(u.email);
                 const statusBadge = u.account_status === 'active'
                     ? '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600">AKTIF</span>'
                     : '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-50 text-amber-600">PENDING</span>';
@@ -1230,14 +1233,14 @@
                                         ${u.avatar_url ? `<img src="${u.avatar_url}" class="w-full h-full object-cover">` : (u.full_name || 'S').charAt(0)}
                                     </div>
                                     <div>
-                                        <div class="font-bold text-slate-800">${u.full_name || '-'}</div>
+                                        <div class="font-bold text-slate-800">${u.full_name || 'Alfian Zaidi'}</div>
                                         <div class="text-[11px] text-slate-400">${u.email}</div>
                                         <div class="text-[10px] text-slate-400">Pejabat: ${u.office_phone || '-'} • HP: ${u.mobile_phone || '-'}</div>
                                     </div>
                                 </div>
                             </td>
                             <td class="py-3 px-2 font-semibold text-slate-600">${u.section_unit || '-'}</td>
-                            <td class="py-3 px-2">${statusBadge}</td>
+                            <td class="py-3 px-2"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600">AKTIF</span></td>
                             <td class="py-3 px-2"><span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-indigo-100 text-[#6259ca]">SUPER USER</span></td>
                             <td class="py-3 px-2 text-right text-[11px] font-semibold text-slate-400"><i class="fa-solid fa-lock mr-1"></i> Dilindungi</td>
                         </tr>
@@ -1320,7 +1323,6 @@
             else loadUsersManagement();
         }
 
-        // --- TINDAKAN TEMPAHAN (ADMIN & SUPER USER) ---
         function openEditBookingModal(id) {
             if (!canManageBookings()) return;
             const booking = currentBookingsCache.find(item => item.id === id);
@@ -1402,7 +1404,6 @@
             else loadBookings();
         }
 
-        // --- MINI KALENDAR ---
         function renderMiniCalendar(bookedDates = []) {
             const now = new Date();
             const year = now.getFullYear();
@@ -1442,7 +1443,6 @@
             document.getElementById('bookingSection').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // --- DATA TEMPAHAN ---
         document.addEventListener('DOMContentLoaded', async () => {
             renderMiniCalendar();
             const { data: { session } } = await supabaseClient.auth.getSession();
