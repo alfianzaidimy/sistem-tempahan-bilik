@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Pilihan Integrasi EmailJS (Percuma) untuk notifikasi emel automatik -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -52,6 +54,11 @@
                         <span>Rekod Tempahan</span>
                     </a>
 
+                    <button type="button" id="menuManageBookings" onclick="jumpToBookingManagement()" class="hidden w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition text-left">
+                        <i class="fa-solid fa-clipboard-check w-4 text-center"></i>
+                        <span>Urus Tempahan</span>
+                    </button>
+
                     <button type="button" id="menuEditProfile" onclick="openEditProfileModal()" class="hidden w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-500 hover:text-[#6259ca] hover:bg-slate-50 transition text-left">
                         <i class="fa-solid fa-id-card w-4 text-center"></i>
                         <span>Edit Profil Saya</span>
@@ -62,7 +69,7 @@
                         <span>Pengurusan User</span>
                     </button>
 
-                    <button type="button" id="sidebarAuthBtn" onclick="openAuthModal('login')" class="w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-400 hover:text-[#6259ca] hover:bg-slate-50 transition text-left">
+                    <button type="button" id="sidebarAuthBtn" onclick="handleAuthAction()" class="w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-400 hover:text-[#6259ca] hover:bg-slate-50 transition text-left">
                         <i class="fa-solid fa-user-shield w-4 text-center"></i>
                         <span id="sidebarAuthLabel">Log Masuk / Daftar</span>
                     </button>
@@ -106,6 +113,11 @@
                         <span>Daftar Akaun</span>
                     </button>
 
+                    <button type="button" id="btnTopManageBookings" onclick="jumpToBookingManagement()" class="hidden px-3.5 py-2.5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold flex items-center space-x-1.5 transition">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                        <span>Urus Tempahan</span>
+                    </button>
+
                     <button type="button" id="btnTopManageUsers" onclick="openManageUsersModal()" class="hidden px-3.5 py-2.5 rounded-2xl bg-indigo-50 hover:bg-indigo-100 text-[#6259ca] text-xs font-bold flex items-center space-x-1.5 transition">
                         <i class="fa-solid fa-users-gear"></i>
                         <span>Urus User</span>
@@ -131,6 +143,9 @@
                     </span>
                 </div>
                 <div class="flex flex-wrap items-center gap-2">
+                    <button type="button" id="btnBannerManageBookings" onclick="jumpToBookingManagement()" class="hidden px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition">
+                        Sahkan / Pinda Tempahan
+                    </button>
                     <button type="button" id="btnBannerEditProfile" onclick="openEditProfileModal()" class="hidden px-3 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-[#6259ca] border border-indigo-200 text-xs font-bold transition">
                         Edit Profil
                     </button>
@@ -198,10 +213,19 @@
             </section>
 
             <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 mb-8">
+                <!-- KALENDAR DENGAN NAVIGASI BULAN -->
                 <section id="calendarSection" class="xl:col-span-5 bg-white p-5 rounded-3xl border border-slate-100 shadow-xs">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-base font-extrabold text-slate-800">Available Dates</h3>
-                        <span id="calendarMonthLabel" class="px-3 py-1.5 rounded-xl bg-[#f4f3ff] text-[#6259ca] text-xs font-bold">November 2026</span>
+                        <div class="flex items-center space-x-1.5">
+                            <button type="button" onclick="changeCalendarMonth(-1)" title="Bulan Sebelumnya" class="w-7 h-7 rounded-xl bg-[#f4f3ff] hover:bg-[#6259ca] text-[#6259ca] hover:text-white flex items-center justify-center text-xs transition">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <span id="calendarMonthLabel" class="px-3 py-1.5 rounded-xl bg-[#f4f3ff] text-[#6259ca] text-xs font-bold min-w-[125px] text-center">November 2026</span>
+                            <button type="button" onclick="changeCalendarMonth(1)" title="Bulan Seterusnya" class="w-7 h-7 rounded-xl bg-[#f4f3ff] hover:bg-[#6259ca] text-[#6259ca] hover:text-white flex items-center justify-center text-xs transition">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="grid grid-cols-7 text-center text-[11px] font-bold text-slate-400 mb-2">
                         <span>Isn</span><span>Sel</span><span>Rab</span><span>Kha</span><span>Jum</span><span>Sab</span><span>Aha</span>
@@ -209,7 +233,7 @@
                     <div id="miniCalendarGrid" class="grid grid-cols-7 gap-1.5 text-center text-xs font-semibold text-slate-600"></div>
                     <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
                         <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-[#6259ca] mr-1.5"></span> Ada Tempahan</span>
-                        <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-slate-200 mr-1.5"></span> Kosong</span>
+                        <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-slate-200 mr-1.5"></span> Kosong (Klik untuk pilih)</span>
                     </div>
                 </section>
 
@@ -240,7 +264,7 @@
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
-                                <label class="block font-bold text-slate-600 mb-1">Emel Rasmi</label>
+                                <label class="block font-bold text-slate-600 mb-1">Emel Berdaftar (Untuk Notifikasi)</label>
                                 <input type="email" id="emel" required class="w-full px-3.5 py-2.5 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]" placeholder="nama@mindef.gov.my">
                             </div>
                             <div>
@@ -281,14 +305,19 @@
             </div>
 
             <section id="tableSection" class="bg-white p-5 sm:p-6 rounded-3xl border border-slate-100 shadow-xs">
-                <div class="flex items-center justify-between mb-4">
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
                     <div>
                         <h3 class="text-base font-extrabold text-slate-800">Jadual Tempahan Semasa</h3>
-                        <p class="text-xs text-slate-400">Senarai rekod terkini daripada pangkalan data Supabase</p>
+                        <p id="tableSubtitle" class="text-xs text-slate-400">Senarai rekod terkini daripada pangkalan data Supabase</p>
                     </div>
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-600">
-                        <span class="w-2 h-2 mr-1.5 bg-emerald-500 rounded-full animate-pulse"></span> Live Sync
-                    </span>
+                    <div class="flex items-center gap-2">
+                        <span id="staffModeBadge" class="hidden px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 text-[#6259ca]">
+                            Mod Pengurusan Admin/Super User Aktif
+                        </span>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-600">
+                            <span class="w-2 h-2 mr-1.5 bg-emerald-500 rounded-full animate-pulse"></span> Live Sync
+                        </span>
+                    </div>
                 </div>
 
                 <div class="overflow-x-auto">
@@ -580,7 +609,7 @@
             <div class="flex items-center justify-between mb-5">
                 <div>
                     <h3 class="text-base font-extrabold text-slate-800">Ubah Detail Mesyuarat & Pinda Tarikh</h3>
-                    <p class="text-xs text-slate-400">Kemaskini maklumat tempahan bilik secara langsung</p>
+                    <p class="text-xs text-slate-400">Kemaskini maklumat tempahan bilik & hantar notifikasi emel pemohon</p>
                 </div>
                 <button type="button" onclick="closeEditBookingModal()" class="text-slate-400 hover:text-slate-700 p-1">
                     <i class="fa-solid fa-xmark text-lg"></i>
@@ -630,9 +659,30 @@
                     </div>
                 </div>
 
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-600 mb-1">Emel Pemohon</label>
+                        <input type="email" id="editBookingEmail" required class="w-full px-3.5 py-2.5 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-600 mb-1">Status Permohonan</label>
+                        <select id="editBookingStatus" required class="w-full px-3.5 py-2.5 bg-[#fafbfe] border border-slate-200 rounded-xl focus:outline-none focus:border-[#6259ca]">
+                            <option value="Menunggu Kelulusan">Menunggu Kelulusan</option>
+                            <option value="Diluluskan">Diluluskan</option>
+                            <option value="Dipinda">Dipinda</option>
+                            <option value="Dibatalkan">Dibatalkan</option>
+                        </select>
+                    </div>
+                </div>
+
+                <label class="flex items-center space-x-2 text-slate-600 font-semibold pt-1 cursor-pointer">
+                    <input type="checkbox" id="notifyApplicantOnEdit" checked class="rounded text-[#6259ca] focus:ring-[#6259ca]">
+                    <span>Hantar notifikasi pindaan/status ke emel berdaftar pemohon</span>
+                </label>
+
                 <div class="flex items-center justify-end space-x-2.5 pt-2">
                     <button type="button" onclick="closeEditBookingModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs transition">Batal</button>
-                    <button type="submit" id="btnSaveBookingEdit" class="px-5 py-2.5 rounded-xl bg-[#6259ca] hover:bg-[#5249b5] text-white font-bold text-xs shadow-md shadow-[#6259ca]/25 transition">Simpan Perubahan</button>
+                    <button type="submit" id="btnSaveBookingEdit" class="px-5 py-2.5 rounded-xl bg-[#6259ca] hover:bg-[#5249b5] text-white font-bold text-xs shadow-md shadow-[#6259ca]/25 transition">Simpan & Maklum Pemohon</button>
                 </div>
             </form>
         </div>
@@ -642,6 +692,15 @@
         const SUPABASE_URL = 'https://sawdjsujxtmyiicosxcw.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_fCnZl3czaDMOZkGmCcWYsQ_LsPvIGBA';
         const SUPER_USER_EMAIL = 'alfianzaidi@gmail.com';
+
+        // PILIHAN: Isi maklumat EmailJS percuma jika mahu emel dihantar secara automatik di latar belakang
+        const EMAILJS_PUBLIC_KEY = '';   // Cth: 'user_xxxxxxxxxxxxx'
+        const EMAILJS_SERVICE_ID = '';   // Cth: 'service_xxxxxxx'
+        const EMAILJS_TEMPLATE_ID = '';  // Cth: 'template_xxxxxxx'
+
+        if (EMAILJS_PUBLIC_KEY && window.emailjs) {
+            emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+        }
 
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -656,6 +715,11 @@
         let currentSession = null;
         let currentProfile = null;
         let currentBookingsCache = [];
+
+        // State bulan & tahun kalendar yang sedang dipaparkan
+        const initialDate = new Date();
+        let viewCalYear = initialDate.getFullYear();
+        let viewCalMonth = initialDate.getMonth();
 
         function isSuperUserEmail(email) {
             return (email || '').trim().toLowerCase() === SUPER_USER_EMAIL;
@@ -693,6 +757,11 @@
             if (window.innerWidth < 1024) {
                 document.getElementById('sidebar').classList.add('-translate-x-full');
             }
+        }
+
+        function jumpToBookingManagement() {
+            closeMobileMenu();
+            document.getElementById('tableSection').scrollIntoView({ behavior: 'smooth' });
         }
 
         function pilihBilik(namaBilik) {
@@ -741,6 +810,53 @@
             return data?.publicUrl || null;
         }
 
+        // Hantar notifikasi status permohonan ke emel berdaftar pemohon
+        async function sendBookingNotificationEmail(booking, newStatus, customNote = '') {
+            if (!booking || !booking.emel) return;
+
+            const subject = `[Sistem Tempahan Fasiliti MinDef] Status Permohonan: ${newStatus.toUpperCase()} - ${booking.tajuk}`;
+            const bodyLines = [
+                `Assalamualaikum / Salam Sejahtera ${booking.nama_pemohon || 'Pemohon'},`,
+                ``,
+                `Status permohonan tempahan fasiliti anda telah dikemas kini seperti berikut:`,
+                ``,
+                `• Tajuk Mesyuarat / Program : ${booking.tajuk}`,
+                `• Fasiliti Bilik            : ${booking.fasiliti}`,
+                `• Tarikh                    : ${booking.tarikh}`,
+                `• Masa                      : ${booking.masa_mula} - ${booking.masa_tamat}`,
+                `• Bahagian / Unit           : ${booking.unit}`,
+                `• Status Terkini            : ${newStatus.toUpperCase()}`,
+                customNote ? `• Catatan Admin             : ${customNote}` : '',
+                ``,
+                `Sekian, terima kasih.`,
+                `Unit Pentadbiran Fasiliti • Bahagian Akaun, MinDef`
+            ].filter(Boolean).join('\n');
+
+            // Jika EmailJS dikonfigurasi, hantar secara automatik tanpa perlu buka aplikasi emel
+            if (EMAILJS_PUBLIC_KEY && EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID && window.emailjs) {
+                try {
+                    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+                        to_email: booking.emel,
+                        to_name: booking.nama_pemohon,
+                        subject: subject,
+                        status: newStatus.toUpperCase(),
+                        fasiliti: booking.fasiliti,
+                        tarikh: booking.tarikh,
+                        masa: `${booking.masa_mula} - ${booking.masa_tamat}`,
+                        tajuk: booking.tajuk,
+                        message: bodyLines
+                    });
+                    return;
+                } catch (err) {
+                    console.error('Ralat EmailJS, beralih ke mailto:', err);
+                }
+            }
+
+            // Lalai: Buka klien emel rasmi terus kepada emel berdaftar pemohon
+            const mailtoUrl = `mailto:${encodeURIComponent(booking.emel)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines)}`;
+            window.open(mailtoUrl, '_blank');
+        }
+
         function syncBookingFormLock() {
             const allowed = canBookFacility();
             const fieldIds = ['nama', 'unit', 'emel', 'fasiliti', 'tarikh', 'mula', 'tamat', 'tajuk', 'btnSubmit'];
@@ -763,7 +879,7 @@
 
             if (allowed) {
                 notice.className = 'mb-3 px-3.5 py-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center justify-between gap-2';
-                noticeText.innerText = 'Akaun aktif disahkan — anda boleh menghantar permohonan tempahan bilik.';
+                noticeText.innerText = 'Akaun aktif disahkan — notifikasi status akan dihantar ke emel berdaftar anda.';
                 noticeLoginBtn.classList.add('hidden');
                 submitBtn.innerText = 'Hantar Permohonan';
 
@@ -804,9 +920,13 @@
 
             const menuEditProfile = document.getElementById('menuEditProfile');
             const menuManageUsers = document.getElementById('menuManageUsers');
+            const menuManageBookings = document.getElementById('menuManageBookings');
             const btnTopManageUsers = document.getElementById('btnTopManageUsers');
+            const btnTopManageBookings = document.getElementById('btnTopManageBookings');
             const btnBannerManageUsers = document.getElementById('btnBannerManageUsers');
+            const btnBannerManageBookings = document.getElementById('btnBannerManageBookings');
             const btnBannerEditProfile = document.getElementById('btnBannerEditProfile');
+            const staffModeBadge = document.getElementById('staffModeBadge');
 
             if (!currentSession) {
                 greetingTitle.innerText = 'Hello, Pelawat';
@@ -828,9 +948,13 @@
 
                 menuEditProfile.classList.add('hidden');
                 menuManageUsers.classList.add('hidden');
+                menuManageBookings.classList.add('hidden');
                 btnTopManageUsers.classList.add('hidden');
+                btnTopManageBookings.classList.add('hidden');
                 btnBannerManageUsers.classList.add('hidden');
+                btnBannerManageBookings.classList.add('hidden');
                 btnBannerEditProfile.classList.add('hidden');
+                staffModeBadge.classList.add('hidden');
             } else {
                 const superByEmail = isSuperUserEmail(currentSession.user?.email);
                 const name = currentProfile?.full_name || (superByEmail ? 'Alfian Zaidi' : currentSession.user.email);
@@ -884,6 +1008,20 @@
                     btnBannerEditProfile.classList.add('hidden');
                 }
 
+                // Menu Pengurusan Tempahan untuk Admin & Super User
+                if (status === 'active' && (role === 'admin' || role === 'super_user')) {
+                    menuManageBookings.classList.remove('hidden');
+                    btnTopManageBookings.classList.remove('hidden');
+                    btnBannerManageBookings.classList.remove('hidden');
+                    staffModeBadge.classList.remove('hidden');
+                } else {
+                    menuManageBookings.classList.add('hidden');
+                    btnTopManageBookings.classList.add('hidden');
+                    btnBannerManageBookings.classList.add('hidden');
+                    staffModeBadge.classList.add('hidden');
+                }
+
+                // Menu Pengurusan User khusus untuk Super User
                 if (role === 'super_user' && status === 'active') {
                     menuManageUsers.classList.remove('hidden');
                     btnTopManageUsers.classList.remove('hidden');
@@ -1356,7 +1494,7 @@
 
         function openEditBookingModal(id) {
             if (!canManageBookings()) return;
-            const booking = currentBookingsCache.find(item => item.id === id);
+            const booking = currentBookingsCache.find(item => String(item.id) === String(id));
             if (!booking) return;
 
             document.getElementById('editBookingId').value = booking.id;
@@ -1367,6 +1505,9 @@
             document.getElementById('editBookingTitle').value = booking.tajuk || '';
             document.getElementById('editBookingApplicant').value = booking.nama_pemohon || '';
             document.getElementById('editBookingUnit').value = booking.unit || '';
+            document.getElementById('editBookingEmail').value = booking.emel || '';
+            document.getElementById('editBookingStatus').value = booking.status || 'Menunggu Kelulusan';
+            document.getElementById('notifyApplicantOnEdit').checked = true;
 
             document.getElementById('editBookingModal').classList.remove('hidden');
         }
@@ -1385,14 +1526,17 @@
             btn.innerText = 'Menyimpan...';
 
             const id = document.getElementById('editBookingId').value;
+            const shouldNotify = document.getElementById('notifyApplicantOnEdit').checked;
             const payload = {
                 fasiliti: document.getElementById('editBookingFacility').value,
                 tarikh: document.getElementById('editBookingDate').value,
                 masa_mula: document.getElementById('editBookingStart').value,
                 masa_tamat: document.getElementById('editBookingEnd').value,
-                tajuk: document.getElementById('editBookingTitle').value,
-                nama_pemohon: document.getElementById('editBookingApplicant').value,
-                unit: document.getElementById('editBookingUnit').value
+                tajuk: document.getElementById('editBookingTitle').value.trim(),
+                nama_pemohon: document.getElementById('editBookingApplicant').value.trim(),
+                unit: document.getElementById('editBookingUnit').value.trim(),
+                emel: document.getElementById('editBookingEmail').value.trim().toLowerCase(),
+                status: document.getElementById('editBookingStatus').value
             };
 
             const { error } = await supabaseClient
@@ -1401,25 +1545,37 @@
                 .eq('id', id);
 
             btn.disabled = false;
-            btn.innerText = 'Simpan Perubahan';
+            btn.innerText = 'Simpan & Maklum Pemohon';
 
             if (error) {
                 alert('Gagal kemas kini tempahan: ' + error.message);
             } else {
                 closeEditBookingModal();
-                loadBookings();
+                await loadBookings();
+                if (shouldNotify && payload.emel) {
+                    await sendBookingNotificationEmail(payload, payload.status, 'Maklumat atau tarikh tempahan telah dipinda oleh Pentadbir.');
+                }
             }
         });
 
         async function updateBookingStatus(id, newStatus) {
             if (!canManageBookings()) return;
+            const booking = currentBookingsCache.find(item => String(item.id) === String(id));
+
             const { error } = await supabaseClient
                 .from('tempahan')
                 .update({ status: newStatus })
                 .eq('id', id);
 
-            if (error) alert('Gagal kemas kini status: ' + error.message);
-            else loadBookings();
+            if (error) {
+                alert('Gagal kemas kini status: ' + error.message);
+                return;
+            }
+
+            await loadBookings();
+            if (booking && booking.emel) {
+                await sendBookingNotificationEmail(booking, newStatus);
+            }
         }
 
         async function deleteBooking(id) {
@@ -1435,10 +1591,24 @@
             else loadBookings();
         }
 
+        // Tukar bulan kalendar (-1 = bulan sebelum, +1 = bulan seterusnya)
+        function changeCalendarMonth(offset) {
+            viewCalMonth += offset;
+            if (viewCalMonth > 11) {
+                viewCalMonth = 0;
+                viewCalYear += 1;
+            } else if (viewCalMonth < 0) {
+                viewCalMonth = 11;
+                viewCalYear -= 1;
+            }
+            const bookedDates = currentBookingsCache.map(b => b.tarikh);
+            renderMiniCalendar(bookedDates);
+        }
+
         function renderMiniCalendar(bookedDates = []) {
             const now = new Date();
-            const year = now.getFullYear();
-            const month = now.getMonth();
+            const year = viewCalYear;
+            const month = viewCalMonth;
             const monthNames = ["Januari", "Februari", "Mac", "April", "Mei", "Jun", "Julai", "Ogos", "September", "Oktober", "November", "Disember"];
             document.getElementById('calendarMonthLabel').innerText = `${monthNames[month]} ${year}`;
 
@@ -1456,7 +1626,7 @@
             for (let day = 1; day <= daysInMonth; day++) {
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                 const isBooked = bookedDates.includes(dateStr);
-                const isToday = day === now.getDate();
+                const isToday = day === now.getDate() && month === now.getMonth() && year === now.getFullYear();
 
                 let cellClass = "py-2 rounded-full cursor-pointer hover:bg-[#f4f3ff] transition ";
                 if (isBooked) {
@@ -1465,7 +1635,7 @@
                     cellClass += "border border-[#6259ca] text-[#6259ca] font-bold";
                 }
 
-                grid.innerHTML += `<div onclick="setTarikh('${dateStr}')" class="${cellClass}">${day}</div>`;
+                grid.innerHTML += `<div onclick="setTarikh('${dateStr}')" title="Pilih tarikh ${dateStr}" class="${cellClass}">${day}</div>`;
             }
         }
 
@@ -1522,20 +1692,21 @@
                 const statusText = b.status || 'Diluluskan';
                 let badgeColor = 'bg-emerald-50 text-emerald-600';
                 if (statusText === 'Menunggu Kelulusan') badgeColor = 'bg-amber-50 text-amber-600';
+                if (statusText === 'Dipinda') badgeColor = 'bg-indigo-50 text-[#6259ca]';
                 if (statusText === 'Dibatalkan' || statusText === 'Ditolak') badgeColor = 'bg-rose-50 text-rose-600';
 
                 const staffControls = allowActions ? `
                     <div class="mt-2 flex flex-wrap items-center justify-end gap-1">
-                        <button type="button" onclick="openEditBookingModal(${b.id})" title="Ubah Detail / Pinda Tarikh" class="px-2 py-1 rounded-lg bg-indigo-100 hover:bg-indigo-200 text-indigo-700 text-[10px] font-bold transition">
-                            Pinda / Ubah
+                        <button type="button" onclick="openEditBookingModal('${b.id}')" title="Ubah Detail / Pinda Tarikh & Emel Pemohon" class="px-2.5 py-1 rounded-lg bg-indigo-100 hover:bg-indigo-200 text-indigo-700 text-[10px] font-bold transition">
+                            <i class="fa-solid fa-pen-to-square mr-1"></i>Pinda
                         </button>
-                        <button type="button" onclick="updateBookingStatus(${b.id}, 'Diluluskan')" title="Luluskan" class="px-2 py-1 rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-700 text-[10px] font-bold transition">
-                            Lulus
+                        <button type="button" onclick="updateBookingStatus('${b.id}', 'Diluluskan')" title="Sahkan Tempahan & Emel Pemohon" class="px-2.5 py-1 rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-700 text-[10px] font-bold transition">
+                            <i class="fa-solid fa-check mr-1"></i>Sahkan
                         </button>
-                        <button type="button" onclick="updateBookingStatus(${b.id}, 'Dibatalkan')" title="Batal Permohonan" class="px-2 py-1 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-700 text-[10px] font-bold transition">
-                            Batal
+                        <button type="button" onclick="updateBookingStatus('${b.id}', 'Dibatalkan')" title="Batal Permohonan & Emel Pemohon" class="px-2.5 py-1 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-700 text-[10px] font-bold transition">
+                            <i class="fa-solid fa-ban mr-1"></i>Batal
                         </button>
-                        <button type="button" onclick="deleteBooking(${b.id})" title="Padam Rekod" class="px-2 py-1 rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-700 text-[10px] font-bold transition">
+                        <button type="button" onclick="deleteBooking('${b.id}')" title="Padam Rekod" class="px-2 py-1 rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-700 text-[10px] font-bold transition">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </div>
@@ -1551,6 +1722,7 @@
                         <td class="py-3.5 px-3">
                             <div class="font-semibold text-slate-800">${b.tajuk}</div>
                             <div class="text-[11px] text-slate-400">${b.nama_pemohon} (${b.unit})</div>
+                            ${b.emel ? `<div class="text-[10px] text-slate-400"><i class="fa-regular fa-envelope mr-1"></i>${b.emel}</div>` : ''}
                         </td>
                         <td class="py-3.5 px-3 text-right">
                             <span class="px-3 py-1 rounded-full text-[11px] font-bold ${badgeColor}">${statusText}</span>
@@ -1574,10 +1746,12 @@
             btn.innerText = 'Menghantar...';
             btn.disabled = true;
 
+            const registeredEmail = (currentSession?.user?.email || document.getElementById('emel').value).trim().toLowerCase();
+
             const formData = {
                 nama_pemohon: document.getElementById('nama').value.trim(),
                 unit: document.getElementById('unit').value.trim(),
-                emel: document.getElementById('emel').value.trim().toLowerCase(),
+                emel: registeredEmail,
                 fasiliti: document.getElementById('fasiliti').value,
                 tarikh: document.getElementById('tarikh').value,
                 masa_mula: document.getElementById('mula').value,
@@ -1594,7 +1768,7 @@
             if (error) {
                 alert('Gagal hantar: ' + error.message);
             } else {
-                alert('Permohonan berjaya dihantar!');
+                alert(`Permohonan berjaya dihantar! Notifikasi status akan dihantar ke ${registeredEmail}.`);
                 document.getElementById('bookingForm').reset();
                 syncBookingFormLock();
                 loadBookings();
